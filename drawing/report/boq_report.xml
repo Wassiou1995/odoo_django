@@ -489,7 +489,7 @@ Thanks and best regards,
 							<div class="container">
 								<div class="row">
 									<h2 style="text-align : center;">
-										<span t-field="o.name_seq" />
+										<center><span t-field="o.name_seq" /></center>
 									</h2>
 									<br />
 								</div>
