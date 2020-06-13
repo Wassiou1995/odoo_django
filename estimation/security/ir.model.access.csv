@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_construction_estimation,access.construction.estimation,model_construction_estimation,,1,1,1,1
+access_construction_pricing,access.construction.pricing,model_construction_pricing,,1,1,1,1

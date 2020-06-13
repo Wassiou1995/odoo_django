@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!--tree view of the project model -->
+        <record id="estimation_graph" model="ir.ui.view">
+            <field name="name">construction.estimation.graph</field>
+            <field name="model">construction.estimation</field>
+            <field name="arch" type="xml">
+                <graph string="Estimations" type="pie">
+                    <field name="project_id"/>
+                    <field name="Indirect_cost"/>
+                </graph>
+            </field>
+        </record>
+
+        <!--form view of the project model -->
+        <record id="estimation_form" model="ir.ui.view">
+            <field name="name">construction.estimation.form</field>
+            <field name="model">construction.estimation</field>
+            <field name="arch" type="xml">
+                <form string="estimations">
+                    <header>
+                        <button name="confirm_estimation" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ['department_approval','ir_approve','approved','cancel'])]}" groups="base.group_user"/>
+                        <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': [('state', 'in', ['department_approval','ir_approve','approved','cancel'])]}" groups="base.group_user"/>
+                        <button name="department_approve" type="object" string="Department Approve" attrs="{'invisible': [('state', 'in', ['new','ir_approve','approved','cancel'])]}" groups="estimation.group_estimation_department_manager"/>
+                        <button name="action_reject" type="object" string="Reject" attrs="{'invisible': [('state', 'in', ['new','approved','cancel'])]}" groups="estimation.group_estimation_department_manager,estimation.group_estimation_user"/>
+                        <button name="action_approve" type="object" string="Approve" attrs="{'invisible': [('state', 'in', ['new','department_approval','po_created','cancel','approved'])]}" groups="estimation.group_estimation_user"/>
+                        <button name="action_reset_draft" type="object" string="Reset To Draft" attrs="{'invisible': [('state', 'in', ['new','department_approval','ir_approve','approved'])]}"/>
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="attachment_tree_view" type="object" icon="fa-files-o">
+                                <field string="Documents" name="doc_count" widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" name="open_pricing" type="object" icon="fa-bitcoin">
+                                <field string="Pricing" name="pricing_count" widget="statinfo"/>
+                            </button>
+                            <button name="toggle_active" type="object" confirm="(Un)archiving an estimation automatically. Do you want to proceed?" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name_seq_estimation" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                                <field name="project_id" options="{'no_create': True}"
+                                       attrs="{'readonly': [('state', 'in',['ir_approve','approved','cancel'])]}"/>
+                        </group>
+                        <group>
+                            <group name="mould" string="Mould">
+                                   <field name="Quantity"
+                                          attrs="{'readonly': [('state', 'in',['ir_approve','approved','cancel'])]}"/>
+                                   <field name="Price" widget="monetary"
+                                          attrs="{'readonly': [('state', 'in',['ir_approve','approved','cancel'])]}"/>
+                            </group>
+                            <group name="Production" string="Production">
+                                   <field name="Row_materials" widget="monetary"
+                                          attrs="{'readonly': [('state', 'in',['ir_approve','approved','cancel'])]}"/>
+                                   <field name="Manpower" widget="monetary"
+                                          attrs="{'readonly': [('state', 'in',['ir_approve','approved','cancel'])]}"/>
+                                   <field name="Steel_works" widget="monetary"
+                                          attrs="{'readonly': [('state', 'in',['ir_approve','approved','cancel'])]}"/>
+                                   <field name="Others" widget="monetary"
+                                          attrs="{'readonly': [('state', 'in',['ir_approve','approved','cancel'])]}"/>
+                                   <field name="currency_id" invisible="1"
+                                          attrs="{'readonly': [('state', 'in',['ir_approve','approved','cancel'])]}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group name="Delivery" string="Delivery">
+                               <field name="Delivery" widget="monetary"
+                                      attrs="{'readonly': [('state', 'in',['ir_approve','approved','cancel'])]}"/>
+                                <field name="currency_id" invisible="1" />
+                            </group>
+                            <group name="Erection" string="Erection">
+                               <field name="Estimated_MM" widget="monetary"
+                                      attrs="{'readonly': [('state', 'in',['ir_approve','approved','cancel'])]}"/>
+                               <field name="Estimated_M" widget="monetary"
+                                      attrs="{'readonly': [('state', 'in',['ir_approve','approved','cancel'])]}"/>
+                                <field name="currency_id" invisible="1" />
+                            </group>
+                            <group name="Indirect_cost" string="Indirect Costs">
+                               <field name="Indirect_cost" widget="monetary"
+                                      attrs="{'readonly': [('state', 'in',['ir_approve','approved','cancel'])]}"/>
+                                <field name="currency_id" invisible="1" />
+                            </group>
+                            <Group>
+                                <field name="File"/>
+                            </Group>
+                        </group>
+                        <group>
+                            <group name="Summary" string="Summary Percent">
+                            <field name="Mould_percent" widget="progressbar"/>
+                            <field name="Production_percent" widget="progressbar"/>
+                            <field name="Delivery_percent" widget="progressbar"/>
+                            <field name="Erection_percent" widget="progressbar"/>
+                            <field name="Indirect_cost_percent" widget="progressbar"/>
+                        </group>
+                        </group>
+                        <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                <field name="Mould" widget="monetary" />
+                                <field name="Production" widget="monetary" />
+                                <field name="Delivery" widget="monetary" />
+                                <field name="Erection" widget="monetary" />
+                                <field name="Indirect_cost" widget="monetary" />
+                                <field name="currency_id" invisible="1" />
+                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <label for="amount_total"/>
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary"/>
+                                <field name="currency_id" invisible="1" />
+                        </group>
+                    <notebook>
+                        <page string="Other Information">
+                            <group>
+                                <group>
+                                    <field name="confirmed_by_id" readonly="1"/>
+                                    <field name="department_manager_id" readonly="1"/>
+                                    <field name="approved_by_id" readonly="1"/>
+                                    <field name="rejected_by" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="confirmed_date"/>
+                                    <field name="department_approval_date"/>
+                                    <field name="approved_date"/>
+                                    <field name="rejected_date"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+       <!--tree view of the project model -->
+        <record id="estimation_tree" model="ir.ui.view">
+            <field name="name">construction.estimation.tree</field>
+            <field name="model">construction.estimation</field>
+            <field name="arch" type="xml">
+                <tree decoration-danger="state == 'Draft'" decoration-muted="state == 'Confirm'"
+                      decoration-success="state=='Done'">
+                    <field name="name_seq_estimation"/>
+                    <field name="project_id"/>
+                    <field name="amount_total" sum="total" widget="monetary"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!--action of the projects menu-->
+        <record id="action_estimation" model="ir.actions.act_window">
+            <field name="name">Estimation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">construction.estimation</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="help" type="html">
+                  <p class="o_view_nocontent_smiling_face">
+                    Create estimation for project !
+                  </p>
+            </field>
+        </record>
+
+        <!--tree view of the pricing -->
+        <record id="pricing_tree" model="ir.ui.view">
+            <field name="name">construction.pricing.tree</field>
+            <field name="model">construction.pricing</field>
+            <field name="arch" type="xml">
+                <tree string="Pricing">
+                    <field name="project_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--form view of the pricing -->
+        <record id="pricing_form" model="ir.ui.view">
+            <field name="name">construction.pricing.form</field>
+            <field name="model">construction.pricing</field>
+            <field name="arch" type="xml">
+                <form string="Pricing">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box" position="inside">
+                            <button class="oe_stat_button" name="open_drawing" type="object" icon="fa-list" >
+                                <field name="Drawing_count" widget="statinfo" string="Drawings"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name_seq_pricing" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="project_id"/>
+                            </group>
+                            <group>
+                                <field name="margin"/>
+                            </group>
+                            <group>
+                                <field name="cost_production" widget="monetary"/>
+                                <field name="cost_delivery" widget="monetary"/>
+                                <field name="cost_erection" widget="monetary"/>
+                                <field name="currency_id" invisible="1" />
+                            </group>
+                            <group>
+                                <field name="UR_production" widget="monetary" readonly="1"/>
+                                <field name="UR_delivery" widget="monetary" readonly="1"/>
+                                <field name="UR_erection" widget="monetary" readonly="1"/>
+                                <field name="currency_id" invisible="1" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!--action of the pricing-->
+        <record id="action_pricing" model="ir.actions.act_window">
+            <field name="name">Pricing</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">construction.pricing</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new pricing !
+              </p>
+            </field>
+        </record>
+
+       <menuitem id="construction_estimation" name="Estimation"  action="action_estimation" sequence="1"/>
+       <menuitem id="construction_pricing" name="Pricing"  action="action_pricing" parent="construction_estimation" sequence="1"/>
+
+</odoo>

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!--tree view of the project model -->
+        <record id="drawing_tree" model="ir.ui.view">
+            <field name="name">construction.drawing.tree</field>
+            <field name="model">construction.drawing</field>
+            <field name="arch" type="xml">
+                <tree string="Drawings">
+                    <field name="name_seq"/>
+                    <field name="project_id"/>
+                    <field name="state"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--form view of the project model -->
+        <record id="drawing_form" model="ir.ui.view">
+            <field name="name">construction.drawing.form</field>
+            <field name="model">construction.drawing</field>
+            <field name="arch" type="xml">
+                <form string="drawings">
+                    <header>
+                        <button name="print_quotation" string="Generate BOQ" type="object" class="btn-primary"/>
+                        <button name="confirm_drawing" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ['department_approval','ir_approve','approved','cancel'])]}" groups="base.group_user"/>
+                        <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': [('state', 'in', ['department_approval','ir_approve','approved','cancel'])]}" groups="base.group_user"/>
+                        <button name="department_approve" type="object" string="Department Approve" attrs="{'invisible': [('state', 'in', ['new','ir_approve','approved','cancel'])]}" groups="estimation.group_estimation_department_manager"/>
+                        <button name="action_reject" type="object" string="Reject" attrs="{'invisible': [('state', 'in', ['new','approved','cancel'])]}" groups="estimation.group_estimation_department_manager,estimation.group_estimation_user"/>
+                        <button name="action_approve" type="object" string="Approve" attrs="{'invisible': [('state', 'in', ['new','department_approval','po_created','cancel','approved'])]}" groups="estimation.group_estimation_user"/>
+                        <button name="action_reset_draft" type="object" string="Reset To Draft" attrs="{'invisible': [('state', 'in', ['new','department_approval','ir_approve','approved'])]}"/>
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" confirm="(Un)archiving an estimation automatically. Do you want to proceed?" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name_seq" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="project_id"/>
+                                <field name="pricing_id"/>
+                                <field name="Division"/>
+                                <field name="Building"/>
+                            </group>
+                            <group>
+                                <field name="create_date"/>
+                                <field name="close_date"/>
+                                <field name="create_by_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Item List">
+                                <field name="item_ids" widget="one2many_list" >
+                                    <tree editable="bottom">
+                                        <field name="title"/>
+                                        <field name="pricing_id" readonly="1" invisible="1"/>
+                                        <field name="Width"/>
+                                        <field name="Length"/>
+                                        <field name="Height"/>
+                                        <field name="Thick"/>
+                                        <field name="Volume" readonly="1" sum="Total"/>
+                                        <field name="Quantity"/>
+                                        <field name="Unit"/>
+                                        <field name="UR_production" widget="monetary"/>
+                                        <field name="Amount_prod" widget="monetary"
+                                               sum="tot_pro" readonly="1" invisible="1"/>
+                                        <field name="UR_delivery" widget="monetary"/>
+                                        <field name="Amount_deli" widget="monetary"
+                                               sum="tot_del" readonly="1" invisible="1"/>
+                                        <field name="UR_erection" widget="monetary"/>
+                                        <field name="Amount_erec" widget="monetary"
+                                               sum="tot_ere" readonly="1" invisible="1"/>
+                                        <field name="UR_total" widget="monetary" invisible="1"/>
+                                        <field name="Amount_total" widget="monetary"
+                                               sum="amount_total" readonly="1" invisible="1"/>
+                                        <field name="currency_id" invisible="1" />
+                                        <button name="open_bom" string="Add Item Codes" type="object"/>
+                                    </tree>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right" colspan="2"
+									    name="total_cost">
+									<field name="total_cost" widget="monetary" />
+                                    <field name="currency_id" invisible="1" />
+								</group>
+                            </page>
+                            <page string="Other Information">
+                                <group>
+                                    <group>
+                                        <field name="confirmed_by_id" readonly="1"/>
+                                        <field name="department_manager_id" readonly="1"/>
+                                        <field name="approved_by_id" readonly="1"/>
+                                        <field name="rejected_by" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="confirmed_date"/>
+                                        <field name="department_approval_date"/>
+                                        <field name="approved_date"/>
+                                        <field name="rejected_date"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+     <!--tree view of the item code -->
+        <record id="code_tree" model="ir.ui.view">
+            <field name="name">item.code.tree</field>
+            <field name="model">item.code</field>
+            <field name="arch" type="xml">
+                <tree string="Drawings">
+                    <field name="item_id"/>
+                    <field name="title"/>
+                    <field name="Type"/>
+                    <field name="Type_of_finish"/>
+                    <field name="Width"/>
+                    <field name="Length"/>
+                    <field name="Height"/>
+                    <field name="Thick"/>
+                    <field name="Quantity"/>
+                    <field name="Unit"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--form view of the item code -->
+        <record id="code_form" model="ir.ui.view">
+            <field name="name">item.code.form</field>
+            <field name="model">item.code</field>
+            <field name="arch" type="xml">
+                <form string="BOM">
+                    <sheet>
+                        <group>
+                            <field name="item_id" readonly="1"/>
+                            <field name="title"/>
+                            <field name="Type"/>
+                            <field name="Type_of_finish"/>
+                            <field name="Width"/>
+                            <field name="Length"/>
+                            <field name="Height"/>
+                            <field name="Thick"/>
+                            <field name="Quantity"/>
+                            <field name="Unit"/>
+                        </group>
+                        <notebook>
+                            <page string="Item List">
+                                <field name="sub_ids" widget="one2many_list">
+                                    <tree editable="bottom">
+                                        <field name="title"/>
+                                        <field name="Width"/>
+                                        <field name="Length"/>
+                                        <field name="Height"/>
+                                        <field name="Thick"/>
+                                        <field name="Quantity"/>
+                                        <field name="Unit"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!--action of the projects menu-->
+        <record id="action_item_code" model="ir.actions.act_window">
+            <field name="name">Item Code</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">item.code</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new bill of quantity !
+              </p>
+            </field>
+        </record>
+
+        <!--action of the projects menu-->
+        <record id="action_drawing" model="ir.actions.act_window">
+            <field name="name">Drawings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">construction.drawing</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new bill of quantity !
+              </p>
+            </field>
+        </record>
+
+
+
+        <menuitem id="construction_drawing" name="Drawing Service"  action="action_drawing" sequence="1"/>
+
+
+</odoo>

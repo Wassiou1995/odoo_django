@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_construction_drawing,access.construction.drawing,model_construction_drawing,,1,1,1,1
+access_item_number,access.item.number,model_item_number,,1,1,1,1
+access_item_code,access.item.code,model_item_code,,1,1,1,1
+access_item_sub,access.item.sub,model_item_sub,,1,1,1,1
