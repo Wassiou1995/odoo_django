@@ -162,7 +162,6 @@ class ConstructionEstimation (models.Model):
                 ('res_model', '=', 'construction.estimation'), ('res_id', '=', estimation.id)])
 
 
-
     @api.multi
     def attachment_tree_view(self):
         self.ensure_one()
@@ -185,7 +184,7 @@ class ConstructionEstimation (models.Model):
         }
 
     def get_pricing_count(self):
-        count = self.env['construction.pricing'].search_count([('project_id', '=', 'project_id.id')])
+        count = self.env['construction.pricing'].search_count([('project_id', '=', self.project_id.id)])
         self.pricing_count = count
 
     def action_confirm(self):

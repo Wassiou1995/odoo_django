@@ -10,6 +10,7 @@
                     <field name="name_seq"/>
                     <field name="project_id"/>
                     <field name="state"/>
+                    <!--field name="total_cost" widget="monetary" sum="tot_cost"/-->
                     <field name="active"/>
                 </tree>
             </field>
@@ -69,13 +70,13 @@
                                         <field name="Volume" readonly="1" sum="Total"/>
                                         <field name="Quantity"/>
                                         <field name="Unit"/>
-                                        <field name="UR_production" widget="monetary"/>
+                                        <field name="Unit_Production" widget="monetary"/>
                                         <field name="Amount_prod" widget="monetary"
                                                sum="tot_pro" readonly="1" invisible="1"/>
-                                        <field name="UR_delivery" widget="monetary"/>
+                                        <field name="Unit_Delivery" widget="monetary"/>
                                         <field name="Amount_deli" widget="monetary"
                                                sum="tot_del" readonly="1" invisible="1"/>
-                                        <field name="UR_erection" widget="monetary"/>
+                                        <field name="Unit_Erection" widget="monetary"/>
                                         <field name="Amount_erec" widget="monetary"
                                                sum="tot_ere" readonly="1" invisible="1"/>
                                         <field name="UR_total" widget="monetary" invisible="1"/>

@@ -45,6 +45,9 @@
                     <button class="oe_stat_button" name="open_drawing" type="object" icon="fa-list" >
 	                        <field name="Drawing_count" widget="statinfo" string="Drawings"/>
                     </button>
+                     <button class="oe_stat_button" name="open_pricing" type="object" icon="fa-bitcoin">
+                            <field string="Pricing" name="pricing_count" widget="statinfo"/>
+                     </button>
 	            </div>
         	</field>
         </record>

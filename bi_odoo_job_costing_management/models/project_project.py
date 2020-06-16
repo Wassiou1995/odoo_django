@@ -20,6 +20,25 @@ class Project(models.Model):
     Drawing_count = fields.Integer(string='drawing', compute='get_drawing_count')
     Estimation_count = fields.Integer(string='estimation', compute='get_estimation_count')
 
+    def get_pricing_count(self):
+        count = self.env['construction.pricing'].search_count([('project_id', '=', self.id)])
+        self.pricing_count = count
+
+    @api.multi
+    def open_pricing(self):
+        self.ensure_one()
+        return {
+            'name': _('Pricing'),
+            'domain': [('project_id', '=', self.id)],
+            'res_model': 'construction.pricing',
+            'type': 'ir.actions.act_window',
+            'view_id': False,
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'limit': 80,
+            'context': "{'default_project_id': %d}" % (self.id)
+        }
+
     @api.multi
     def open_drawing(self):
         self.ensure_one()

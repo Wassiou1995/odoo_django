@@ -65,7 +65,7 @@ class ConstructionDrawing (models.Model):
         lang = self.env.context.get('lang')
         template = template_id and self.env['mail.template'].browse(template_id)
         if template and template.lang:
-            lang = template._render_template(template.lang, 'sale.order', self.ids[0])
+            lang = template._render_template(template.lang, 'construction.drawing', self.ids[0])
         ctx = {
             'default_model': 'construction.drawing',
             'default_res_id': self.ids[0],
@@ -200,6 +200,22 @@ class ConstructionDrawing (models.Model):
             total += line.Amount_erec
         self.total_erec = total
 
+    @api.model
+    def default_get(self, fields):
+        res = super(ConstructionDrawing, self).default_get(fields)
+        item_ids = [(5, 0, 0)]
+        drawing_rec = self.env['construction.drawing'].search([])
+        for pro in drawing_rec:
+            line = (0, 0, {
+                'pricing_id': pro.pricing_id,
+            })
+            item_ids.append(line)
+            res.update({
+                'item_ids': item_ids,
+                'pricing_id': pro.pricing_id,
+            })
+            return res
+
 
 class ItemNumber (models.Model):
     _name = 'item.number'
@@ -225,20 +241,13 @@ class ItemNumber (models.Model):
     Amount_erec = fields.Float(String='Amount Erection', compute='_compute_total_erection', required=True)
     UR_total = fields.Float(String='Unit Rate Total', compute='_compute_total_UR', required=True)
     Amount_total = fields.Float(String='Amount Total', compute='_compute_total_amount', required=True)
-    Amount_cost_t = fields.Float(String='Total Amount', compute='_compute_amount_total', required=True)
     pricing_id = fields.Many2one('construction.pricing', String='Pricing',
                                  default=lambda self: self.env.context.get('drawing_id'))
     currency_id = fields.Many2one("res.currency", compute='get_currency_id', string="Currency")
-    volume_prod = fields.Float(String='Unit Production', compute='_compute_unit_production', required=True)
-    volume_deli = fields.Float(String='Unit Delivery', compute='_compute_unit_delivery', required=True)
-    volume_erec = fields.Float(String='Unit Erection', compute='_compute_unit_erection', required=True)
+    Unit_Production = fields.Float(String='Unit Production', compute='_compute_unit_production', required=True)
+    Unit_Delivery = fields.Float(String='Unit Delivery', compute='_compute_unit_delivery', required=True)
+    Unit_Erection = fields.Float(String='Unit Erection', compute='_compute_unit_erection', required=True)
 
-    @api.multi
-    def _compute_amount_total(self):
-        total = 0.0
-        for line in self.items:
-            total += line.subtotal
-        self.total_labour_cost = total
 
     @api.multi
     def open_bom(self):
@@ -274,40 +283,40 @@ class ItemNumber (models.Model):
             rec.Amount_total = rec.Amount_prod + rec.Amount_deli + rec.Amount_erec
 
     @api.multi
-    @api.depends('Quantity', 'volume_prod')
+    @api.depends('Amount_prod' ,'Quantity', 'Unit_Production')
     def _compute_total_production(self):
         for rec in self:
-            rec.Amount_prod = rec.Quantity * rec.volume_prod
+            rec.Amount_prod = rec.Quantity * rec.Unit_Production
 
     @api.multi
-    @api.depends('volume_deli', 'Quantity')
+    @api.depends('Amount_deli', 'Unit_Delivery', 'Quantity')
     def _compute_total_delivery(self):
         for rec in self:
-            rec.Amount_deli = rec.Quantity * rec.volume_deli
+            rec.Amount_deli = rec.Quantity * rec.Unit_Delivery
 
     @api.multi
-    @api.depends('volume_erec', 'Quantity')
+    @api.depends('Amount_erec', 'Unit_Erection', 'Quantity')
     def _compute_total_erection(self):
         for rec in self:
-            rec.Amount_erec = rec.Quantity * rec.volume_erec
+            rec.Amount_erec = rec.Quantity * rec.Unit_Erection
 
     @api.multi
-    @api.depends('UR_production', 'Volume')
+    @api.depends('Unit_Production','UR_production', 'Volume')
     def _compute_unit_production(self):
         for rec in self:
-            rec.volume_prod = rec.UR_production * rec.Volume
+            rec.Unit_Production = rec.UR_production * rec.Volume
 
     @api.multi
-    @api.depends('UR_delivery', 'Volume')
+    @api.depends('Unit_Delivery','UR_delivery', 'Volume')
     def _compute_unit_delivery(self):
         for rec in self:
-            rec.volume_deli = rec.UR_delivery * rec.Volume
+            rec.Unit_Delivery = rec.UR_delivery * rec.Volume
 
     @api.multi
-    @api.depends('UR_erection', 'Volume')
+    @api.depends('Unit_Erection', 'UR_erection', 'Volume')
     def _compute_unit_erection(self):
         for rec in self:
-            rec.volume_erec = rec.UR_erection * rec.Volume
+            rec.Unit_Erection = rec.UR_erection * rec.Volume
 
     @api.multi
     def get_currency_id(self):
@@ -325,7 +334,6 @@ class ItemNumber (models.Model):
         self.UR_production = self.pricing_id.UR_production
         self.UR_delivery = self.pricing_id.UR_delivery
         self.UR_erection = self.pricing_id.UR_erection
-
 
 
     class ItemCode(models.Model):
