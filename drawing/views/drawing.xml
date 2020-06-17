@@ -9,8 +9,8 @@
                 <tree string="Drawings">
                     <field name="name_seq"/>
                     <field name="project_id"/>
+                    <field name="total_drawing" sum="tot_draw" widget="monetary"/>
                     <field name="state"/>
-                    <!--field name="total_cost" widget="monetary" sum="tot_cost"/-->
                     <field name="active"/>
                 </tree>
             </field>
@@ -87,8 +87,8 @@
                                     </tree>
                                 </field>
                                 <group class="oe_subtotal_footer oe_right" colspan="2"
-									    name="total_cost">
-									<field name="total_cost" widget="monetary" />
+									    name="total_drawing">
+									<field name="total_drawing" widget="monetary" />
                                     <field name="currency_id" invisible="1" />
 								</group>
                             </page>

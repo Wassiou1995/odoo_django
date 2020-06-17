@@ -34,12 +34,13 @@ class ConstructionDrawing (models.Model):
         ('approved', 'Approved'),
         ('cancel', 'Cancel')], string='Stage', copy=False, default="new")
     active = fields.Boolean(default=True, help="If the active field is set to False")
-    total_cost = fields.Float(String='Total Cost', compute='_compute_total_cost', required=True)
+    total_drawing = fields.Float(String='Total Drawing', compute='_compute_total_drawing')
     currency_id = fields.Many2one("res.currency", compute='get_currency_id', string="Currency")
     total_prod = fields.Float(String='Amount Production', compute='_compute_total_prod')
     total_deli = fields.Float(String='Amount Delivery', compute='_compute_total_deli')
     total_erec = fields.Float(String='Amount Erection', compute='_compute_total_erec')
     type_name = fields.Char('Type Name', compute='_compute_type_name')
+    total_volume = fields.Char('Total Volume', compute='_compute_total_volume')
 
     @api.multi
     @api.depends('state')
@@ -173,11 +174,22 @@ class ConstructionDrawing (models.Model):
         }
 
     @api.multi
-    def _compute_total_cost(self):
+    @api.depends('item_ids.Amount_total')
+    def _compute_total_drawing(self):
+        for line in self:
+            total_drawing = 0.0
+            for rec in line.item_ids:
+                total_drawing += rec.Amount_total
+            line.update({
+                'total_drawing': total_drawing,
+            })
+
+    @api.multi
+    def _compute_total_volume(self):
         total = 0.0
-        for line in self.item_ids:
-            total += line.Amount_total
-        self.total_cost = total
+        for rec in self.item_ids:
+            total += rec.Volume
+        self.total_volume = total
 
     @api.multi
     def _compute_total_prod(self):
@@ -283,7 +295,7 @@ class ItemNumber (models.Model):
             rec.Amount_total = rec.Amount_prod + rec.Amount_deli + rec.Amount_erec
 
     @api.multi
-    @api.depends('Amount_prod' ,'Quantity', 'Unit_Production')
+    @api.depends('Amount_prod' , 'Quantity', 'Unit_Production')
     def _compute_total_production(self):
         for rec in self:
             rec.Amount_prod = rec.Quantity * rec.Unit_Production
