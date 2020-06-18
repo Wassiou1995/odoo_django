@@ -5,7 +5,7 @@ from datetime import datetime
 class ConstructionDrawing (models.Model):
     _name = 'construction.drawing'
     _description = 'Items Records for Projects'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['portal.mixin','mail.thread', 'mail.activity.mixin']
     _rec_name = 'name_seq'
 
     project_id = fields.Many2one('project.project', string='Project', required=True)
@@ -41,6 +41,28 @@ class ConstructionDrawing (models.Model):
     total_erec = fields.Float(String='Amount Erection', compute='_compute_total_erec')
     type_name = fields.Char('Type Name', compute='_compute_type_name')
     total_volume = fields.Char('Total Volume', compute='_compute_total_volume')
+
+    '''@api.onchange('pricing_id')
+    def onchange_partner_id(self):
+        for rec in self:
+            return {'domain': {'pricing_id': [('project_id', '=', rec.pricing_id.project_id)]}}
+
+    @api.multi
+    @api.onchange('item_ids.pricing_id')
+    def onchange_pricing_id(self):
+        res = {}
+        if not self.item_ids.pricing_id:
+            return res
+        self.item_ids.pricing_id = self.pricing_id
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super(ConstructionDrawing, self).default_get(fields_list)
+        vals = [(0, 0, {'pricing_id': self.pricing_id}),
+                (0, 0, {'pricing_id': self.pricing_id})]
+        res.update({'item_ids': vals})
+        return res'''
+
 
     @api.multi
     @api.depends('state')
@@ -212,22 +234,6 @@ class ConstructionDrawing (models.Model):
             total += line.Amount_erec
         self.total_erec = total
 
-    @api.model
-    def default_get(self, fields):
-        res = super(ConstructionDrawing, self).default_get(fields)
-        item_ids = [(5, 0, 0)]
-        drawing_rec = self.env['construction.drawing'].search([])
-        for pro in drawing_rec:
-            line = (0, 0, {
-                'pricing_id': pro.pricing_id,
-            })
-            item_ids.append(line)
-            res.update({
-                'item_ids': item_ids,
-                'pricing_id': pro.pricing_id,
-            })
-            return res
-
 
 class ItemNumber (models.Model):
     _name = 'item.number'
@@ -259,7 +265,6 @@ class ItemNumber (models.Model):
     Unit_Production = fields.Float(String='Unit Production', compute='_compute_unit_production', required=True)
     Unit_Delivery = fields.Float(String='Unit Delivery', compute='_compute_unit_delivery', required=True)
     Unit_Erection = fields.Float(String='Unit Erection', compute='_compute_unit_erection', required=True)
-
 
     @api.multi
     def open_bom(self):

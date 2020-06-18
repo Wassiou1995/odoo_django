@@ -198,7 +198,7 @@
 									<strong>Total Amount : </strong>
 								</td>
 								<td style="border: 1px solid black;" bgcolor="#DAC3BE">
-									<strong><span t-field="o.total_cost" /></strong>
+									<strong><span t-field="o.total_drawing" /></strong>
 								</td>
 							</tr>
 						</table>
@@ -252,7 +252,7 @@
 					<div class="page">
 						<t t-foreach="docs" t-as="o">
 						<h2><center>JOB ORDER</center></h2>
-						<h3><center><span t-field="o.create_date" /></center></h3>
+						<h3><center><span t-usertime="%Y-%m-%d %H-%M-%S" /></center></h3>
 						<table style="border-collapse: collapse;width: 100%;" class="table table-condensed">
 							<tr style="padding: 8px;text-align: left;border-top: 1px solid #ddd;height:50%;">
 								<td style="border: 1px solid black;">
@@ -458,7 +458,7 @@
 						<br/>
 						<p>
 Dear Sir,
-With reference to your enquiry regarding the above subject, we are pleased to submit our best price quotation with attached BOQ with the amount of QAR <span t-field="o.total_cost" />.Please find below standard details for terms and conditions.
+With reference to your enquiry regarding the above subject, we are pleased to submit our best price quotation with attached BOQ with the amount of QAR <span t-field="o.total_drawing" />.Please find below standard details for terms and conditions.
                         </p>
                         <br/>
                         <p style="font:times new roman;">
@@ -576,7 +576,7 @@ Thanks and best regards,
 									<strong>Total Amount : </strong>
 								</td>
 								<td style="border: 1px solid black;" bgcolor="#DAC3BE">
-									<span t-field="o.total_cost" />
+									<span t-field="o.total_drawing" />
 								</td>
 							</tr>
 						</table>
