@@ -7,6 +7,7 @@ from odoo import api, fields, models, _
 class Project(models.Model):
     _inherit = 'project.project'
 
+    pricing_count = fields.Integer(compute='get_pricing_count', string="Number of Pricings")
     issue_count = fields.Integer(compute='_compute_issue_count', string="Issues")
     issue_ids = fields.One2many('project.issue', 'project_id', string="Issues", domain=['|', ('stage_id.fold', '=', False), ('stage_id', '=', False)])
     issue_needaction_count = fields.Integer(compute="_issue_needaction_count", string="Issues")
