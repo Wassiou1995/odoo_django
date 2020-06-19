@@ -47,7 +47,7 @@
                         <group>
                             <group>
                                 <field name="project_id" readonly="1"/>
-                                <field name="pricing_id" readonly="1"/>
+                                <field name="pricing_id" />
                                 <field name="Division"/>
                                 <field name="Building"/>
                             </group>
@@ -62,7 +62,7 @@
                                 <field name="item_ids" widget="one2many_list" >
                                     <tree editable="bottom">
                                         <field name="title"/>
-                                        <field name="pricing_id" readonly="1"/>
+                                        <field name="pricing_id"/>
                                         <field name="Width"/>
                                         <field name="Length"/>
                                         <field name="Height"/>
@@ -71,12 +71,15 @@
                                         <field name="Quantity"/>
                                         <field name="Unit"/>
                                         <field name="UR_production" widget="monetary"/>
+                                        <field name="Unit_Production" widget="monetary"/>
                                         <field name="Amount_prod" widget="monetary"
                                                sum="tot_pro" readonly="1" invisible="1"/>
                                         <field name="UR_delivery" widget="monetary"/>
+                                        <field name="Unit_Delivery" widget="monetary"/>
                                         <field name="Amount_deli" widget="monetary"
                                                sum="tot_del" readonly="1" invisible="1"/>
                                         <field name="UR_erection" widget="monetary"/>
+                                        <field name="Unit_Erection" widget="monetary"/>
                                         <field name="Amount_erec" widget="monetary"
                                                sum="tot_ere" readonly="1" invisible="1"/>
                                         <field name="UR_total" widget="monetary" invisible="1"/>

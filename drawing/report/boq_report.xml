@@ -143,19 +143,19 @@
 											<span t-field="item.Unit" />
 										</td>
 										<td style="border: 1px solid black;">
-											<span t-field="item.volume_prod" />
+											<span t-field="item.Unit_Production" />
 										</td>
 										<td style="border: 1px solid black;">
 											<span t-field="item.Amount_prod" />
 										</td>
 										<td style="border: 1px solid black;">
-											<span t-field="item.volume_deli" />
+											<span t-field="item.Unit_Delivery" />
 										</td>
 										<td style="border: 1px solid black;">
 											<span t-field="item.Amount_deli" />
 										</td>
 										<td style="border: 1px solid black;">
-											<span t-field="item.volume_erec" />
+											<span t-field="item.Unit_Erection" />
 										</td>
 										<td style="border: 1px solid black;">
 											<span t-field="item.Amount_erec" />

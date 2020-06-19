@@ -45,23 +45,10 @@ class ConstructionDrawing (models.Model):
     '''@api.onchange('pricing_id')
     def onchange_partner_id(self):
         for rec in self:
-            return {'domain': {'pricing_id': [('project_id', '=', rec.pricing_id.project_id)]}}
+            return {'domain': {'pricing_id': [('project_id', '=', rec.pricing_id.project_id)]}}'''
 
-    @api.multi
-    @api.onchange('item_ids.pricing_id')
-    def onchange_pricing_id(self):
-        res = {}
-        if not self.item_ids.pricing_id:
-            return res
-        self.item_ids.pricing_id = self.pricing_id
 
-    @api.model
-    def default_get(self, fields_list):
-        res = super(ConstructionDrawing, self).default_get(fields_list)
-        vals = [(0, 0, {'pricing_id': self.pricing_id}),
-                (0, 0, {'pricing_id': self.pricing_id})]
-        res.update({'item_ids': vals})
-        return res'''
+
 
 
     @api.multi
@@ -249,7 +236,7 @@ class ItemNumber (models.Model):
     Height = fields.Float('Height', required=True)
     Thick = fields.Float('Thick', required=True)
     Quantity = fields.Integer('Quantity', required=True)
-    Volume = fields.Integer('Volume', compute='_compute_total', required=True)
+    Volume = fields.Float('Volume', compute='_compute_total', required=True)
     Unit = fields.Many2one('uom.uom', 'Unit Of Measure')
     UR_production = fields.Float(String='UR Production')
     UR_delivery = fields.Float(String='UR Delivery')
@@ -351,6 +338,15 @@ class ItemNumber (models.Model):
         self.UR_production = self.pricing_id.UR_production
         self.UR_delivery = self.pricing_id.UR_delivery
         self.UR_erection = self.pricing_id.UR_erection
+
+
+    @api.multi
+    @api.onchange('pricing_id')
+    def onchange_pricing_id(self):
+        res = {}
+        if not self.pricing_id:
+            return res
+        self.pricing_id = self.drawing_id.pricing_id
 
 
     class ItemCode(models.Model):
