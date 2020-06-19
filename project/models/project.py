@@ -71,7 +71,6 @@ class Project(models.Model):
     _order = "sequence, name, id"
     _period_number = 5
 
-
     def get_alias_model_name(self, vals):
         return vals.get('alias_model', 'project.task')
 
@@ -173,6 +172,7 @@ class Project(models.Model):
     def _get_default_favorite_user_ids(self):
         return [(6, 0, [self.env.uid])]
 
+    pricing_count = fields.Integer(compute='get_pricing_count', string="Number of Pricings")
     total_cost = fields.Float("Total Cost", compute="_compute_total_cost", default=0.0)
     total_estimated_cost = fields.Float("Total Estimated Cost", compute="_compute_total_estimated_cost", default=0.0)
     Project_contractor = fields.Char(string='Contractor Name')
@@ -185,7 +185,8 @@ class Project(models.Model):
     Description = fields.Text(string='Notes', track_visibility='always')
     #Start_date = fields.Date(string='Start Date', required=True)
     #Date_deadline = fields.Date(string='Date Deadline', required=True)
-    name_seq = fields.Char(string='Sequence', readonly=True,copy=False,index=True,default=lambda self: self.env['ir.sequence'].get('project.project'))
+    name_seq_project = fields.Char(string='Reference', required=True, copy=False, readonly=True,
+                                    index=True, default=lambda self: _('New'))
 
     state = fields.Selection([
         ('Draft', 'Draft'),
@@ -264,9 +265,10 @@ class Project(models.Model):
     ]
 
     @api.model
-    def create(self, vals):
-        if vals.get('name_seq', _('New')) == _('New'):
-            vals['name_seq'] = self.env['ir.sequence'].next_by_code('project.sequence') or _('New')
+    def create_seq(self, vals):
+        if vals.get('name_seq_project', _('New')) == _('New'):
+            vals['name_seq_project'] = self.env['ir.sequence'].next_by_code('construction.project.sequence') or \
+                                          _('New')
         result = super(Project, self).create(vals)
         return result
 
