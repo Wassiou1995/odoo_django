@@ -316,6 +316,8 @@ class ProjectPricing (models.Model):
     name_seq_pricing = fields.Char(string='Reference', required=True, copy=False, readonly=True,
                                     index=True, default=lambda self: _('New'))
     Drawing_count = fields.Integer(string='drawing', compute='get_drawing_count')
+    active = fields.Boolean(default=True,
+                            help="If the active field is set to False, it will allow you to hide the estimation without removing it.")
 
 
     @api.multi

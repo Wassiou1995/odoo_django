@@ -179,6 +179,8 @@
             <field name="arch" type="xml">
                 <tree string="Pricing">
                     <field name="project_id"/>
+                    <field name="name_seq_pricing"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -193,6 +195,9 @@
                         <div class="oe_button_box" name="button_box" position="inside">
                             <button class="oe_stat_button" name="open_drawing" type="object" icon="fa-list" >
                                 <field name="Drawing_count" widget="statinfo" string="Drawings"/>
+                            </button>
+                            <button name="toggle_active" type="object" confirm="(Un)archiving an estimation automatically. Do you want to proceed?" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
                             </button>
                         </div>
                         <div class="oe_title">
@@ -245,6 +250,5 @@
         </record>
 
        <menuitem id="construction_estimation" name="Estimation"  action="action_estimation" sequence="1"/>
-       <menuitem id="construction_pricing" name="Pricing"  action="action_pricing" parent="construction_estimation" sequence="1"/>
 
 </odoo>

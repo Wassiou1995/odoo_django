@@ -250,6 +250,8 @@ class ItemNumber (models.Model):
     Unit_Production = fields.Float(String='Unit Production', compute='_compute_unit_production', required=True)
     Unit_Delivery = fields.Float(String='Unit Delivery', compute='_compute_unit_delivery', required=True)
     Unit_Erection = fields.Float(String='Unit Erection', compute='_compute_unit_erection', required=True)
+    active = fields.Boolean(default=True,
+                            help="If the active field is set to False, it will allow you to hide the estimation without removing it.")
 
     @api.multi
     def open_bom(self):
