@@ -185,9 +185,6 @@ class Project(models.Model):
     Description = fields.Text(string='Notes', track_visibility='always')
     #Start_date = fields.Date(string='Start Date', required=True)
     #Date_deadline = fields.Date(string='Date Deadline', required=True)
-    name_seq_project = fields.Char(string='Reference', required=True, copy=False, readonly=True,
-                                    index=True, default=lambda self: _('New'))
-
     state = fields.Selection([
         ('Draft', 'Draft'),
         ('Confirm', 'Confirm'),
@@ -264,13 +261,7 @@ class Project(models.Model):
         ('project_date_greater', 'check(date >= date_start)', 'Error! project start-date must be lower than project end-date.')
     ]
 
-    @api.model
-    def create_seq(self, vals):
-        if vals.get('name_seq_project', _('New')) == _('New'):
-            vals['name_seq_project'] = self.env['ir.sequence'].next_by_code('construction.project.sequence') or \
-                                          _('New')
-        result = super(Project, self).create(vals)
-        return result
+
 
     def action_confirm(self):
         for rec in self:

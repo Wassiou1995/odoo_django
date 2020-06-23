@@ -340,13 +340,13 @@ class ItemNumber (models.Model):
         self.UR_erection = self.pricing_id.UR_erection
 
 
-    '''@api.multi
+    @api.multi
     @api.onchange('pricing_id')
     def onchange_pricing_id(self):
         res = {}
         if not self.pricing_id:
             return res
-        self.pricing_id = self.drawing_id.pricing_id'''
+        self.pricing_id = self.drawing_id.pricing_id
 
 
     class ItemCode(models.Model):

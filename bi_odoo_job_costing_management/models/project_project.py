@@ -7,6 +7,8 @@ from odoo import api, fields, models, _
 class Project(models.Model):
     _inherit = 'project.project'
 
+    name_seq_project = fields.Char(string='Reference', required=True, copy=False, readonly=True,
+                                   index=True, default='New')
     pricing_count = fields.Integer(compute='get_pricing_count', string="Number of Pricings")
     issue_count = fields.Integer(compute='_compute_issue_count', string="Issues")
     issue_ids = fields.One2many('project.issue', 'project_id', string="Issues", domain=['|', ('stage_id.fold', '=', False), ('stage_id', '=', False)])
@@ -20,6 +22,13 @@ class Project(models.Model):
     total_estimated_cost = fields.Float("Total Estimated Cost" , compute = "_compute_total_estimated_cost" , default=0.0)
     Drawing_count = fields.Integer(string='drawing', compute='get_drawing_count')
     Estimation_count = fields.Integer(string='estimation', compute='get_estimation_count')
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name_seq_project', _('New')) == _('New'):
+            vals['name_seq_project'] = self.env['ir.sequence'].next_by_code('project.sequence') or _('New')
+        result = super(Project, self).create(vals)
+        return result
 
     def get_pricing_count(self):
         count = self.env['construction.pricing'].search_count([('project_id', '=', self.id)])

@@ -25,6 +25,10 @@
                <!--field name="total_cost"/>
                <field name="total_estimated_cost"/-->
            </field>
+            <!--field name="name" position="before">
+               <field name="name_seq_project"/>
+           </field-->
+
         </field>
     </record>
         
