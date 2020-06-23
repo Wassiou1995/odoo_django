@@ -21,11 +21,12 @@
                     <field name="purchase_order_count" widget="statinfo" string="Purchase" />
                 </button>
            </div>
-           <field name="partner_id" position="after">
-               <!--field name="total_cost"/>
-               <field name="total_estimated_cost"/-->
+           <field name="Ref_no" position="after">
+               <field name="total_cost"/>
+               <field name="total_estimated_cost"/>
+               <field name="selling_price"/>
            </field>
-            <!--field name="name" position="before">
+            <!--field name="name" position="after">
                <field name="name_seq_project"/>
            </field-->
 

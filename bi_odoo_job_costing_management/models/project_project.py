@@ -22,6 +22,10 @@ class Project(models.Model):
     total_estimated_cost = fields.Float("Total Estimated Cost" , compute = "_compute_total_estimated_cost" , default=0.0)
     Drawing_count = fields.Integer(string='drawing', compute='get_drawing_count')
     Estimation_count = fields.Integer(string='estimation', compute='get_estimation_count')
+    """"selling price (total des drawings)"""
+    selling_price = fields.Float("Selling Price" , compute = "_compute_selling_price" , default=0.0)
+
+
 
     @api.model
     def create(self, vals):
@@ -106,10 +110,17 @@ class Project(models.Model):
 
     def _compute_total_estimated_cost(self):
         for project in self:
-            project.total_estimated_cost=0.0
-            cost_sheet = self.env['construction.estimation'].search([('project_id','=',project.id)])
+            project.total_estimated_cost = 0.0
+            cost_sheet = self.env['construction.estimation'].search([('project_id', '=', project.id)])
             for sheet in cost_sheet:
                 project.total_estimated_cost += sheet.amount_total
+
+    def _compute_selling_price(self):
+        for project in self:
+            project.selling_price = 0.0
+            x = self.env['construction.drawing'].search([('project_id', '=', project.id)])
+            for sheet in x:
+                project.selling_price += sheet.total_drawing
 
     @api.multi
     def purchase_order_count_button(self):

@@ -51,7 +51,7 @@
 									<strong>Project ID : </strong>
 								</td>
 								<td style="border: 1px solid black;">
-									<span t-field="o.project_id.name_seq" />
+									<span t-field="o.project_id.name_seq_project" />
 								</td>
 							</tr>
 							<tr style="padding: 8px;text-align: left;">
@@ -259,7 +259,7 @@
 									<strong>JOB NO : </strong>
 								</td>
 								<td style="border: 1px solid black;">
-									<span t-field="o.project_id.name_seq" />
+									<span t-field="o.project_id.name_seq_project" />
 								</td>
 								<td style="border: 1px solid black;">
 									<strong>Ref.No : </strong>
@@ -363,7 +363,7 @@
 									<strong>Company : </strong>
 								</td>
 								<td style="border: 1px solid black;">
-									<span t-field="o.project_id.name_seq" />
+									<span t-field="o.project_id.name_seq_project" />
 								</td>
 								<td style="border: 1px solid black;">
 									<strong>Our Ref : </strong>
@@ -500,7 +500,7 @@ Thanks and best regards,
 										<strong>Project ID : </strong>
 									</td>
 									<td style="border: 1px solid black;">
-										<span t-field="o.project_id.name_seq" />
+										<span t-field="o.project_id.name_seq_project" />
 									</td>
 								</tr>
 								<tr style="padding: 8px;text-align: left;border-top: 1px solid #ddd;">

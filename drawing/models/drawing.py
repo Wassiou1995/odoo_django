@@ -34,6 +34,7 @@ class ConstructionDrawing (models.Model):
         ('approved', 'Approved'),
         ('cancel', 'Cancel')], string='Stage', copy=False, default="new")
     active = fields.Boolean(default=True, help="If the active field is set to False")
+    """la somme de tout les drawings """
     total_drawing = fields.Float(String='Total Drawing', compute='_compute_total_drawing')
     currency_id = fields.Many2one("res.currency", compute='get_currency_id', string="Currency")
     total_prod = fields.Float(String='Amount Production', compute='_compute_total_prod')
@@ -46,8 +47,6 @@ class ConstructionDrawing (models.Model):
     def onchange_partner_id(self):
         for rec in self:
             return {'domain': {'pricing_id': [('project_id', '=', rec.pricing_id.project_id)]}}'''
-
-
 
     @api.multi
     @api.depends('state')
@@ -339,7 +338,6 @@ class ItemNumber (models.Model):
         self.UR_delivery = self.pricing_id.UR_delivery
         self.UR_erection = self.pricing_id.UR_erection
 
-
     @api.multi
     @api.onchange('pricing_id')
     def onchange_pricing_id(self):
@@ -347,7 +345,6 @@ class ItemNumber (models.Model):
         if not self.pricing_id:
             return res
         self.pricing_id = self.drawing_id.pricing_id
-
 
     class ItemCode(models.Model):
         _name = 'item.code'
