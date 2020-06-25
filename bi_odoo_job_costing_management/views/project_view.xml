@@ -13,16 +13,20 @@
             </field>
         </record>
 
-        <!--record id="inherit_project_project_tree" model="ir.ui.view">
+        <record id="inherit_project_project_tree" model="ir.ui.view">
             <field name="name">inherit.project.project.tree</field>
-            <field name="model">note.note</field>
+            <field name="model">project.project</field>
             <field name="inherit_id" ref="project.view_project"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
 	            	<field name="name_seq_project"/>
+	            	<field name="total_cost"/>
+	            	<field name="total_estimated_cost"/>
+	            	<field name="selling_price"/>
+	            	<field name="profit"/>
 	            </field>
             </field>
-        </record-->
+        </record>
         
         <record id="bi_view_note_note_form" model="ir.ui.view">
             <field name="name">inherit.view.note.note.form</field>

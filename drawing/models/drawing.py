@@ -253,6 +253,16 @@ class ItemNumber (models.Model):
                             help="If the active field is set to False, it will allow you to hide the estimation without removing it.")
 
     @api.multi
+    @api.onchange('pricing_id')
+    def onchange_pricing_id(self):
+        res = {}
+        if not self.pricing_id:
+            return res
+        self.UR_production = self.pricing_id.UR_production
+        self.UR_delivery = self.pricing_id.UR_delivery
+        self.UR_erection = self.pricing_id.UR_erection
+
+    @api.multi
     def open_bom(self):
         self.ensure_one()
         return {
@@ -328,23 +338,16 @@ class ItemNumber (models.Model):
         for line in self:
             line.currency_id = res_user_id.company_id.currency_id.id
 
-    @api.multi
-    @api.onchange('pricing_id')
-    def onchange_pricing_id(self):
-        res = {}
-        if not self.pricing_id:
-            return res
-        self.UR_production = self.pricing_id.UR_production
-        self.UR_delivery = self.pricing_id.UR_delivery
-        self.UR_erection = self.pricing_id.UR_erection
 
-    @api.multi
+
+    '''@api.multi
     @api.onchange('pricing_id')
     def onchange_pricing_id(self):
         res = {}
         if not self.pricing_id:
             return res
         self.pricing_id = self.drawing_id.pricing_id
+    '''
 
     class ItemCode(models.Model):
         _name = 'item.code'

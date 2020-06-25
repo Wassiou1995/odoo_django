@@ -26,10 +26,6 @@
                <field name="total_estimated_cost"/>
                <field name="selling_price"/>
            </field>
-            <!--field name="name" position="after">
-               <field name="name_seq_project"/>
-           </field-->
-
         </field>
     </record>
         

@@ -24,9 +24,10 @@ class Project(models.Model):
     Estimation_count = fields.Integer(string='estimation', compute='get_estimation_count')
     """"selling price (total des drawings)"""
     selling_price = fields.Float("Selling Price" , compute = "_compute_selling_price" , default=0.0)
+    profit = fields.Float("profit" , compute = "_compute_profit" , default=0.0)
 
 
-
+    #Create sequence for estimation
     @api.model
     def create(self, vals):
         if vals.get('name_seq_project', _('New')) == _('New'):
@@ -38,6 +39,8 @@ class Project(models.Model):
         count = self.env['construction.pricing'].search_count([('project_id', '=', self.id)])
         self.pricing_count = count
 
+
+    #open the pricing sheet
     @api.multi
     def open_pricing(self):
         self.ensure_one()
@@ -53,6 +56,7 @@ class Project(models.Model):
             'context': "{'default_project_id': %d}" % (self.id)
         }
 
+    # open the drawing
     @api.multi
     def open_drawing(self):
         self.ensure_one()
@@ -67,6 +71,7 @@ class Project(models.Model):
             'context': "{'default_project_id': %d}" % (self.id)
         }
 
+    # open the estimation button
     @api.multi
     def open_estimation(self):
         self.ensure_one()
@@ -87,6 +92,11 @@ class Project(models.Model):
         count = self.env['construction.drawing'].search_count([('project_id', '=', self.id)])
         self.Drawing_count = count
 
+    @api.multi
+    @api.depends('total_cost', 'selling_price')
+    def _compute_profit(self):
+        for rec in self:
+            rec.profit = (rec.selling_price - rec.total_cost)
 
     @api.multi
     def _get_purchase_count(self):
