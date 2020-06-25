@@ -23,7 +23,7 @@
             <field name="arch" type="xml">
                 <form string="drawings">
                     <header>
-                        <button name="action_quotation_send" string="Send BOQ" type="object" class="btn-primary"/>
+                        <button name="send_mail_template" string="Send BOQ" type="object" class="btn-primary"/>
                         <button name="print_quotation" string="Generate BOQ" type="object" class="btn-primary"/>
                         <button name="confirm_drawing" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ['department_approval','ir_approve','approved','cancel'])]}" groups="base.group_user"/>
                         <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': [('state', 'in', ['department_approval','ir_approve','approved','cancel'])]}" groups="base.group_user"/>
@@ -121,6 +121,7 @@
                 </form>
             </field>
         </record>
+
      <!--tree view of the item code -->
         <record id="code_tree" model="ir.ui.view">
             <field name="name">item.code.tree</field>
@@ -185,7 +186,7 @@
             </field>
         </record>
 
-        <!--action of the projects menu-->
+        <!--action of the item code menu-->
         <record id="action_item_code" model="ir.actions.act_window">
             <field name="name">Item Code</field>
             <field name="type">ir.actions.act_window</field>
@@ -199,7 +200,7 @@
             </field>
         </record>
 
-        <!--action of the projects menu-->
+        <!--action of the drawing menu-->
         <record id="action_drawing" model="ir.actions.act_window">
             <field name="name">Drawings</field>
             <field name="type">ir.actions.act_window</field>
@@ -214,7 +215,7 @@
         </record>
 
 
-
+        <!-- drawing menu-->
         <menuitem id="construction_drawing" name="Drawing Service"  action="action_drawing" sequence="1"/>
 
 

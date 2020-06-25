@@ -5,7 +5,7 @@ from datetime import datetime
 class ConstructionDrawing (models.Model):
     _name = 'construction.drawing'
     _description = 'Items Records for Projects'
-    _inherit = ['portal.mixin','mail.thread', 'mail.activity.mixin']
+    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
     _rec_name = 'name_seq'
 
     project_id = fields.Many2one('project.project', string='Project', required=True)
@@ -37,6 +37,7 @@ class ConstructionDrawing (models.Model):
     """la somme de tout les drawings """
     total_drawing = fields.Float(String='Total Drawing', compute='_compute_total_drawing')
     currency_id = fields.Many2one("res.currency", compute='get_currency_id', string="Currency")
+    #Calculate the total amount of any department in one drawing
     total_prod = fields.Float(String='Amount Production', compute='_compute_total_prod')
     total_deli = fields.Float(String='Amount Delivery', compute='_compute_total_deli')
     total_erec = fields.Float(String='Amount Erection', compute='_compute_total_erec')
@@ -49,11 +50,22 @@ class ConstructionDrawing (models.Model):
             return {'domain': {'pricing_id': [('project_id', '=', rec.pricing_id.project_id)]}}'''
 
     @api.multi
+    def send_mail_template(self):
+        # Find the e-mail template
+        template = self.env.ref('drawing.boq_email_template')
+        # You can also find the e-mail template like this:
+        # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+
+        # Send out the e-mail template to the user
+        self.env['mail.template'].browse(template.id).send_mail(self.id)
+
+    @api.multi
     @api.depends('state')
     def _compute_type_name(self):
         for record in self:
             record.type_name = _('Quotation') if record.state in ('draft', 'sent', 'cancel') else _('Sales Order')
 
+    #mail template
     @api.multi
     def action_quotation_send(self):
         '''
@@ -97,12 +109,26 @@ class ConstructionDrawing (models.Model):
         }
 
     @api.multi
+    def force_quotation_send(self):
+        for order in self:
+            email_act = order.action_quotation_send()
+            if email_act and email_act.get('context'):
+                email_ctx = email_act['context']
+                email_ctx.update(default_email_from=order.company_id.email)
+                order.with_context(**email_ctx).message_post_with_template(email_ctx.get('default_template_id'))
+        return True
+
+    # the currency of project
+    @api.multi
     def get_currency_id(self):
         user_id = self.env.uid
         res_user_id = self.env['res.users'].browse(user_id)
         for line in self:
             line.currency_id = res_user_id.company_id.currency_id.id
 
+    '''
+        This function give status for the drawing 
+    '''
     @api.multi
     def print_quotation(self):
         return self.env.ref('drawing.report_boq').report_action(self)
@@ -157,6 +183,10 @@ class ConstructionDrawing (models.Model):
         })
         return res
 
+    '''
+            This function create a sequence for the drawing loaded by default
+    '''
+
     @api.model
     def create(self, vals):
         if vals.get('name_seq', _('New')) == _('New'):
@@ -179,6 +209,7 @@ class ConstructionDrawing (models.Model):
             'context': "{'default_project_id': %d,'default_drawing_id': %d}" % (self.project_id.id, self.id)
         }
 
+    #Compute the total amount of the drawing in the project
     @api.multi
     @api.depends('item_ids.Amount_total')
     def _compute_total_drawing(self):
@@ -190,6 +221,7 @@ class ConstructionDrawing (models.Model):
                 'total_drawing': total_drawing,
             })
 
+    #Compute the Volume of item
     @api.multi
     def _compute_total_volume(self):
         total = 0.0
@@ -197,6 +229,8 @@ class ConstructionDrawing (models.Model):
             total += rec.Volume
         self.total_volume = total
 
+
+    # compute the amount of any department
     @api.multi
     def _compute_total_prod(self):
         total = 0.0
@@ -218,7 +252,7 @@ class ConstructionDrawing (models.Model):
             total += line.Amount_erec
         self.total_erec = total
 
-
+#the items & sub items
 class ItemNumber (models.Model):
     _name = 'item.number'
     _description = 'Items Records for Projects Lines'
@@ -235,16 +269,23 @@ class ItemNumber (models.Model):
     Quantity = fields.Integer('Quantity', required=True)
     Volume = fields.Float('Volume', compute='_compute_total', required=True)
     Unit = fields.Many2one('uom.uom', 'Unit Of Measure')
+
+    # get the unit pricing for each department
     UR_production = fields.Float(String='UR Production')
     UR_delivery = fields.Float(String='UR Delivery')
     UR_erection = fields.Float(String='UR Erection')
+
+    #get the amount of departments
     Amount_prod = fields.Float(String='Amount Production', compute='_compute_total_production', required=True)
     Amount_deli = fields.Float(String='Amount Delivery', compute='_compute_total_delivery', required=True)
     Amount_erec = fields.Float(String='Amount Erection', compute='_compute_total_erection', required=True)
+
+    # get the Total unit sum of three units
     UR_total = fields.Float(String='Unit Rate Total', compute='_compute_total_UR', required=True)
     Amount_total = fields.Float(String='Amount Total', compute='_compute_total_amount', required=True)
     pricing_id = fields.Many2one('construction.pricing', String='Pricing',
                                  default=lambda self: self.env.context.get('drawing_id'))
+    # the unit rate of project with currency
     currency_id = fields.Many2one("res.currency", compute='get_currency_id', string="Currency")
     Unit_Production = fields.Float(String='Unit Production', compute='_compute_unit_production', required=True)
     Unit_Delivery = fields.Float(String='Unit Delivery', compute='_compute_unit_delivery', required=True)
@@ -252,6 +293,7 @@ class ItemNumber (models.Model):
     active = fields.Boolean(default=True,
                             help="If the active field is set to False, it will allow you to hide the estimation without removing it.")
 
+    # get the unit rate price from pricing or this project
     @api.multi
     @api.onchange('pricing_id')
     def onchange_pricing_id(self):
@@ -262,6 +304,7 @@ class ItemNumber (models.Model):
         self.UR_delivery = self.pricing_id.UR_delivery
         self.UR_erection = self.pricing_id.UR_erection
 
+    #open the item codes
     @api.multi
     def open_bom(self):
         self.ensure_one()
@@ -277,18 +320,22 @@ class ItemNumber (models.Model):
 
         }
 
+
+    #Compute Volume of an item
     @api.multi
     @api.depends('Length', 'Width', 'Height')
     def _compute_total(self):
         for rec in self:
             rec.Volume = rec.Length * rec.Width * rec.Height
 
+    #Compute the total units in the pricing
     @api.multi
     @api.depends('UR_production', 'UR_delivery', 'UR_erection')
     def _compute_total_UR(self):
         for rec in self:
             rec.UR_total = rec.UR_production + rec.UR_delivery + rec.UR_erection
 
+    #Compute the total amounts of departments
     @api.multi
     @api.depends('Amount_prod', 'Amount_deli', 'Amount_erec')
     def _compute_total_amount(self):
@@ -312,6 +359,8 @@ class ItemNumber (models.Model):
     def _compute_total_erection(self):
         for rec in self:
             rec.Amount_erec = rec.Quantity * rec.Unit_Erection
+
+    # Compute Unit rates of amount
 
     @api.multi
     @api.depends('Unit_Production','UR_production', 'Volume')
@@ -340,6 +389,7 @@ class ItemNumber (models.Model):
 
 
 
+
     '''@api.multi
     @api.onchange('pricing_id')
     def onchange_pricing_id(self):
@@ -348,7 +398,7 @@ class ItemNumber (models.Model):
             return res
         self.pricing_id = self.drawing_id.pricing_id
     '''
-
+    # ITEM CODE
     class ItemCode(models.Model):
         _name = 'item.code'
         _description = 'Item Code'
@@ -392,3 +442,16 @@ class ItemNumber (models.Model):
         Quantity = fields.Char('Quantity', required=True)
         Unit = fields.Many2one('uom.uom', 'Unit Of Measure')
 
+    # RES PARTNER inherit
+    class Partner(models.Model):
+        _inherit = 'res.partner'
+
+    @api.multi
+    def send_mail_template(self):
+        # Find the e-mail template
+        template = self.env.ref('mail_template_demo.example_email_template')
+        # You can also find the e-mail template like this:
+        # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+
+        # Send out the e-mail template to the user
+        self.env['mail.template'].browse(template.id).send_mail(self.id)

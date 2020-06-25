@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!--Paper Format in report -->
     <record id="paperformat_progress_job" model="report.paperformat">
         <field name="name">Job A4 low margin</field>
         <field name="default" eval="True"/>
@@ -17,7 +18,7 @@
         <field name="dpi">80</field>
     </record>
 
-
+    <!--Bill of quantity report-->
     <report id="report_boq"
             model="construction.drawing"
             string="BOQ Report"
@@ -27,6 +28,7 @@
             paperformat="drawing.paperformat_progress_job"
             menu="True"/>
 
+    <!--Quotation report -->
     <report id="report_quotation"
             model="construction.drawing"
             string="Quotation Report"

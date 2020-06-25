@@ -22,6 +22,7 @@
 
     # always loaded
     'data': [
+        'data/template.xml',
         'data/sequence.xml',
         'data/mail_template.xml',
         'security/ir.model.access.csv',

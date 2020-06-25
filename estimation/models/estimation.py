@@ -305,7 +305,7 @@ class ConstructionEstimation (models.Model):
             if rec.amount_total > 0:
                 rec.Indirect_cost_price = (rec.Indirect_cost / 28)
 
-
+#Create Pricing for projects
 class ProjectPricing (models.Model):
     _name = 'construction.pricing'
     _description = 'Pricing & Generate BOQ '
@@ -328,6 +328,7 @@ class ProjectPricing (models.Model):
                             help="If the active field is set to False, it will allow you to hide the estimation without removing it.")
 
 
+    #Compute Units for pricing
     @api.multi
     @api.depends('cost_production', 'margin')
     def _compute_UR_production(self):
@@ -347,6 +348,8 @@ class ProjectPricing (models.Model):
         for rec in self:
             rec.UR_erection = rec.cost_erection + ((rec.margin * rec.cost_erection) / 100)
 
+
+    # get currency for the project from user_id
     @api.multi
     def get_currency_id(self):
         user_id = self.env.uid
@@ -354,6 +357,7 @@ class ProjectPricing (models.Model):
         for line in self:
             line.currency_id = res_user_id.company_id.currency_id.id
 
+    #Create sequence for pricing
     @api.model
     def create(self, vals):
         if vals.get('name_seq_pricing', _('New')) == _('New'):
@@ -362,6 +366,8 @@ class ProjectPricing (models.Model):
         result = super(ProjectPricing, self).create(vals)
         return result
 
+
+    #Create drawing button open drawing from smart button
     @api.multi
     def open_drawing(self):
         self.ensure_one()

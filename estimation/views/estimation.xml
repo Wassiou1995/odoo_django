@@ -141,7 +141,7 @@
             </field>
         </record>
 
-       <!--tree view of the project model -->
+       <!--tree view of the estimation model -->
         <record id="estimation_tree" model="ir.ui.view">
             <field name="name">construction.estimation.tree</field>
             <field name="model">construction.estimation</field>
@@ -158,7 +158,7 @@
         </record>
 
 
-        <!--action of the projects menu-->
+        <!--action of the estimation menu-->
         <record id="action_estimation" model="ir.actions.act_window">
             <field name="name">Estimation</field>
             <field name="type">ir.actions.act_window</field>
@@ -235,7 +235,7 @@
             </field>
         </record>
 
-        <!--action of the pricing-->
+        <!--action of the pricing menu-->
         <record id="action_pricing" model="ir.actions.act_window">
             <field name="name">Pricing</field>
             <field name="type">ir.actions.act_window</field>
