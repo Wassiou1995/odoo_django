@@ -18,11 +18,14 @@ class Project(models.Model):
     purchase_order_count = fields.Integer('Purchase Order',compute='_get_purchase_count')
     project_id = fields.One2many('purchase.order','project_id')
     purchase_id = fields.One2many('purchase.order.line','order_id')
+
+    #compute the total real cost of the project & the total estimated cost
     total_cost = fields.Float("Total Cost" , compute = "_compute_total_cost" , default=0.0)
     total_estimated_cost = fields.Float("Total Estimated Cost" , compute = "_compute_total_estimated_cost" , default=0.0)
     Drawing_count = fields.Integer(string='drawing', compute='get_drawing_count')
     Estimation_count = fields.Integer(string='estimation', compute='get_estimation_count')
-    """"selling price (total des drawings)"""
+
+    #Selling price and profit of the project
     selling_price = fields.Float("Selling Price" , compute = "_compute_selling_price" , default=0.0)
     profit = fields.Float("profit" , compute = "_compute_profit" , default=0.0)
 
@@ -92,6 +95,8 @@ class Project(models.Model):
         count = self.env['construction.drawing'].search_count([('project_id', '=', self.id)])
         self.Drawing_count = count
 
+
+    #compute the profit in the project
     @api.multi
     @api.depends('total_cost', 'selling_price')
     def _compute_profit(self):
@@ -111,6 +116,8 @@ class Project(models.Model):
             job_cost_sheet.purchase_order_count = count
         return True
 
+
+    #Calculate the total cost & the total estimated cost all estimations & cost sheet for the same project
     def _compute_total_cost(self):
         for project in self:
             project.total_cost=0.0
@@ -125,6 +132,8 @@ class Project(models.Model):
             for sheet in cost_sheet:
                 project.total_estimated_cost += sheet.amount_total
 
+
+    #computing the selling price of all drawings in the project
     def _compute_selling_price(self):
         for project in self:
             project.selling_price = 0.0

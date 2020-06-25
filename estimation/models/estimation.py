@@ -70,6 +70,8 @@ class ConstructionEstimation (models.Model):
     rejected_date = fields.Date(string="Rejected Date", readonly=True, copy=False)
     reason_for_requisition = fields.Text(string="Reason For Requisition")
 
+
+    # Create one pricing for the projects
     @api.multi
     def open_pricing(self):
         self.ensure_one()
@@ -85,7 +87,7 @@ class ConstructionEstimation (models.Model):
             'context': "{'default_project_id': %d}" % (self.project_id.id)
         }
 
-
+    #the Status of estimations ( Confirm , Approve , reject )
     @api.multi
     def confirm_estimation(self):
         res = self.write({
@@ -162,6 +164,7 @@ class ConstructionEstimation (models.Model):
                 ('res_model', '=', 'construction.estimation'), ('res_id', '=', estimation.id)])
 
 
+    # save documents for the projects
     @api.multi
     def attachment_tree_view(self):
         self.ensure_one()
@@ -195,6 +198,7 @@ class ConstructionEstimation (models.Model):
         for rec in self:
             rec.state = 'Done'
 
+    #Create sequence for projects
     @api.model
     def create(self, vals):
         if vals.get('name_seq_estimation', _('New')) == _('New'):
@@ -203,18 +207,22 @@ class ConstructionEstimation (models.Model):
         result = super(ConstructionEstimation, self).create(vals)
         return result
 
+    #Compute total amount
     @api.multi
     @api.depends('Mould', 'Production', 'Delivery', 'Erection', 'Indirect_cost')
     def _compute_amount_total(self):
         for rec in self:
             rec.amount_total = (rec.Mould + rec.Production + rec.Delivery + rec.Erection + rec.Indirect_cost)
 
+
+    #Compute Mould cost
     @api.multi
     @api.depends('Quantity', 'Price')
     def _compute_amount(self):
         for rec in self:
             rec.Mould = rec.Quantity*rec.Price
 
+    #Compute amount for department ( production  & erection & delivery )
     @api.multi
     @api.depends('Row_materials', 'Manpower', 'Steel_works', 'Others')
     def _compute_amount_production(self):
