@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # Part of BrowseInfo. See LICENSE file for full copyright and licensing details.
-
 from odoo import api, fields, models, _
 
 
@@ -27,6 +26,9 @@ class Project(models.Model):
 
     #Selling price and profit of the project
     selling_price = fields.Float("Selling Price" , compute = "_compute_selling_price" , default=0.0)
+    total_production = fields.Float("Total Production" , compute = "_compute_total_production" , default=0.0)
+    total_delivery = fields.Float("Total Delivery" , compute = "_compute_total_delivery" , default=0.0)
+    total_erection = fields.Float("Total Erection" , compute = "_compute_total_erection" , default=0.0)
     profit = fields.Float("profit" , compute = "_compute_profit" , default=0.0)
 
 
@@ -140,6 +142,30 @@ class Project(models.Model):
             x = self.env['construction.drawing'].search([('project_id', '=', project.id)])
             for sheet in x:
                 project.selling_price += sheet.total_drawing
+
+    #computing the production amount of all drawings in the project
+    def _compute_total_production(self):
+        for project in self:
+            project.total_production = 0.0
+            x = self.env['construction.drawing'].search([('project_id', '=', project.id)])
+            for sheet in x:
+                project.total_production += sheet.total_prod
+
+    #computing the delivery amount of all drawings in the project
+    def _compute_total_delivery(self):
+        for project in self:
+            project.total_delivery = 0.0
+            x = self.env['construction.drawing'].search([('project_id', '=', project.id)])
+            for sheet in x:
+                project.total_delivery += sheet.total_deli
+
+    #computing the erection amount of all drawings in the project
+    def _compute_total_erection(self):
+        for project in self:
+            project.total_erection = 0.0
+            x = self.env['construction.drawing'].search([('project_id', '=', project.id)])
+            for sheet in x:
+                project.total_erection += sheet.total_erec
 
     @api.multi
     def purchase_order_count_button(self):

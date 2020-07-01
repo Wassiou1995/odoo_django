@@ -98,6 +98,8 @@
             'report/project_job_report_view.xml',
             'report/job_order_report_view.xml',
             'report/job_cost_sheet_report_view.xml',
+            'report/boq_report.xml',
+
     ],
     'installable': True,
     'application': True,

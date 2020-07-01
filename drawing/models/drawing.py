@@ -232,25 +232,37 @@ class ConstructionDrawing (models.Model):
 
     # compute the amount of any department
     @api.multi
+    @api.depends('item_ids.Amount_prod')
     def _compute_total_prod(self):
-        total = 0.0
-        for line in self.item_ids:
-            total += line.Amount_prod
-        self.total_prod = total
+        for line in self:
+            total_prod = 0.0
+            for rec in line.item_ids:
+                total_prod += rec.Amount_prod
+            line.update({
+                'total_prod': total_prod,
+            })
 
     @api.multi
+    @api.depends('item_ids.Amount_deli')
     def _compute_total_deli(self):
-        total = 0.0
-        for line in self.item_ids:
-            total += line.Amount_deli
-        self.total_deli = total
+        for line in self:
+            total_deli = 0.0
+            for rec in line.item_ids:
+                total_deli += rec.Amount_deli
+            line.update({
+                'total_deli': total_deli,
+            })
 
     @api.multi
+    @api.depends('item_ids.Amount_erec')
     def _compute_total_erec(self):
-        total = 0.0
-        for line in self.item_ids:
-            total += line.Amount_erec
-        self.total_erec = total
+        for line in self:
+            total_erec = 0.0
+            for rec in line.item_ids:
+                total_erec += rec.Amount_erec
+            line.update({
+                'total_erec': total_erec,
+            })
 
 #the items & sub items
 class ItemNumber (models.Model):

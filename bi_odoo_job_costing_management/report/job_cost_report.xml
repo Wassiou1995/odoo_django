@@ -9,7 +9,7 @@
 				file="bi_odoo_job_costing_management.project_job_temp_id"
 				name="bi_odoo_job_costing_management.project_job_temp_id"/>-->
 				
-	<record id="paperformat_progress_job" model="report.paperformat">
+	<record id="paperformat_boq" model="report.paperformat">
         <field name="name">Job A4 low margin</field>
         <field name="default" eval="True"/>
         <field name="format">A4</field>
@@ -41,4 +41,41 @@
 				name="bi_odoo_job_costing_management.job_cost_sheet_temp_id"/>								
 				
 	</data>
+
+
+	 <!--Paper Format in report -->
+    <record id="paperformat_progress_job" model="report.paperformat">
+        <field name="name">Job A4 low margin</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">45.00</field>
+        <field name="margin_bottom">20.00</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">30</field>
+        <field name="dpi">80</field>
+    </record>
+
+    <!--Bill of quantity report-->
+    <report id="report_boq"
+            model="construction.drawing"
+            string="BOQ Report"
+            report_type="qweb-html"
+            name="drawing.report_bill"
+            file="drawing.report_bill"
+            paperformat="drawing.paperformat_progress_job"
+            menu="True"/>
+
+    <!--Quotation report -->
+    <report id="report_quotation"
+            model="project.project"
+            string="Quotation Report"
+            report_type="qweb-html"
+            name="bi_odoo_job_costing_management.report_bill_quotation"
+            file="bi_odoo_job_costing_management.report_bill_quotation"
+            menu="True" />
 </odoo>
