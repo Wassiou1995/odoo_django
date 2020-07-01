@@ -40,7 +40,7 @@
 				file="bi_odoo_job_costing_management.job_cost_sheet_temp_id"
 				name="bi_odoo_job_costing_management.job_cost_sheet_temp_id"/>								
 				
-	</data>
+
 
 
 	 <!--Paper Format in report -->
@@ -77,5 +77,7 @@
             report_type="qweb-html"
             name="bi_odoo_job_costing_management.report_bill_quotation"
             file="bi_odoo_job_costing_management.report_bill_quotation"
-            menu="True" />
+            menu="True"
+            attachment="'ISR-' + object.name_seq_project + '.pdf'"/>
+	</data>
 </odoo>

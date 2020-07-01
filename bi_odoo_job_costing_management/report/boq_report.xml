@@ -357,6 +357,7 @@
 						</t>
 					</div>
 					<div class="page">
+						<p style="page-break-after:always;"></p>
 						<t t-foreach="docs" t-as="o">
 						<!--div class="container">
 							<div class="row">
@@ -394,7 +395,6 @@ Thanks and best regards,
 						</t>
 					</div>
 					<div class="page">
-						<p style="page-break-after:always;"></p>
 						<t t-foreach="docs" t-as="o">
 							<br/>
 							<h2>Summary Costs</h2>

@@ -31,6 +31,10 @@ class Project(models.Model):
     total_erection = fields.Float("Total Erection" , compute = "_compute_total_erection" , default=0.0)
     profit = fields.Float("profit" , compute = "_compute_profit" , default=0.0)
 
+    @api.multi
+    def print_quotation(self):
+        return self.env.ref('bi_odoo_job_costing_management.report_quotation').report_action(self)
+
 
     #Create sequence for estimation
     @api.model
