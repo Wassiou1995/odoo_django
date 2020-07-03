@@ -99,6 +99,8 @@
             'report/job_order_report_view.xml',
             'report/job_cost_sheet_report_view.xml',
             'report/boq_report.xml',
+            'data/mail_template.xml',
+            'data/template.xml',
 
     ],
     'installable': True,

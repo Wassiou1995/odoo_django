@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_daily_production,access.daily.production,model_daily_production,,1,1,1,1
+access_daily_production_lines,access.daily.production.lines,model_daily_production_lines,,1,1,1,1
+access_daily_delivery,access.daily.delivery,model_daily_delivery,,1,1,1,1
+access_daily_delivery_lines,access.daily.delivery.lines,model_daily_delivery_lines,,1,1,1,1
+access_daily_site,access.daily.site,model_daily_site,,1,1,1,1
+access_daily_site_lines,access.daily.site.lines,model_daily_site_lines,,1,1,1,1
+access_material_request_lines,access.daily.material.request.lines,model_daily_material_request_lines,,1,1,1,1
+access_panel_request_lines,access.daily.panel.request.lines,model_daily_panel_request_lines,,1,1,1,1

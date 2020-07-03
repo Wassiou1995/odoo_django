@@ -8,11 +8,20 @@
         <field name="model">project.project</field>
         <field name="inherit_id" ref="project.edit_project" />
         <field name="arch" type="xml">
-            <header>
-                <!-- generate quotation and send it to the customer-->
-                <button name="print_quotation" string="Generate Quotation" type="object" class="btn-primary"/>
-                <button name="send_mail_template" string="Send Quotation" type="object" class="btn-primary"/>
-            </header>
+            <xpath expr="//form//sheet" position="before">
+                <header>
+                    <button name="print_quotation" string="Generate Quotation" type="object" class="btn-primary"/>
+                    <button name="send_mail_template" string="Send Quotation" type="object" class="btn-primary"/>
+                    <button name="action_confirm" type="object" groups="base.user_admin"
+                            states="Draft" string="confirm" class="oe_highlight"/>
+                    <button name="action_in_progress" type="object" groups="base.user_admin"
+                            states="Confirm" string="in progress" class="oe_highlight"/>
+                    <button name="action_done" type="object" groups="base.user_admin"
+                            states="In Progress" string="done" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" statusbar_visible="Draft,Confirm,Done"/>
+                </header>
+            </xpath>
+
             <div class="oe_button_box" name="button_box" position="inside">
                <button name="button_view_issue" type="object" class="oe_stat_button" icon="fa-bug" attrs="{'invisible': [('issue_count', '=', 0)]}">
                    <field name="issue_count" string="Issues" widget="statinfo"/>
@@ -26,12 +35,23 @@
                     <field name="purchase_order_count" widget="statinfo" string="Purchase" />
                 </button>
            </div>
-           <field name="Ref_no" position="after">
+           <field name="user_id" position="after">
                <field name="total_cost"/>
                <field name="total_estimated_cost"/>
                <field name="selling_price"/>
+               <field name="Site_address"/>
+               <field name="Site_coordinator"/>
+               <field name="Ref_no"/>
+               <field name="Description"/>
+           </field>
+            <field name="partner_id" position="before">
+               <field name="name_seq_project"/>
            </field>
         </field>
     </record>
-        
+
 </odoo>
+
+
+ <!--tree decoration-danger="state == 'Draft'" decoration-muted="state == 'Confirm'"
+                      decoration-success="state=='Done'" decoration-bf="state=='In Progress'" string="Projects"-->

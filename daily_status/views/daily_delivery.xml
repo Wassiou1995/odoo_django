@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <!--tree view of the delivery model -->
+        <record id="daily_delivery_tree" model="ir.ui.view">
+            <field name="name">daily.delivery.tree</field>
+            <field name="model">daily.delivery</field>
+            <field name="arch" type="xml">
+                <tree string="Daily Delivery">
+                    <field name="name_seq_daily_delivery"/>
+                    <field name="project_id"/>
+                    <field name="date"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!--form view of the project model -->
+        <record id="daily_delivery_form" model="ir.ui.view">
+            <field name="name">daily.delivery.form</field>
+            <field name="model">daily.delivery</field>
+            <field name="arch" type="xml">
+                <form string="daily delivery">
+                    <sheet>
+                        <group>
+                            <field name="name_seq_daily_delivery"/>
+                            <field name="project_id"/>
+                            <field name="user_id"/>
+                            <field name="date"/>
+                            <field name="Site"/>
+                        </group>
+                        <notebook>
+                            <page string="Daily delivery">
+                                <field name="daily_delivery_lines">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="Area" readonly="1"/>
+                                        <field name="Total_area"/>
+                                        <field name="vehicle_no"/>
+                                        <field name="Driver_name"/>
+                                        <field name="Distance"/>
+                                        <field name="Km_rate"/>
+                                        <field name="delivery_note"/>
+                                        <field name="Remarks"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="notes">
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <!--action of the projects menu-->
+        <record id="action_daily_delivery" model="ir.actions.act_window">
+            <field name="name">Daily Delivery</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">daily.delivery</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new daily delivery report !
+              </p>
+            </field>
+        </record>
+</odoo>

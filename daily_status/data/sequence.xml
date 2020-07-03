@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequences for daily production -->
+        <record id="seq_daily_production" model="ir.sequence">
+            <field name="name">Daily Production Report</field>
+            <field name="code">daily.production.sequence</field>
+            <field name="prefix">DP/00</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+         <!-- Sequences for daily site -->
+        <record id="seq_daily_site" model="ir.sequence">
+            <field name="name">Daily Site Report</field>
+            <field name="code">daily.site.sequence</field>
+            <field name="prefix">DS/00</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequences for daily delivery -->
+        <record id="seq_daily_delivery" model="ir.sequence">
+            <field name="name">Daily Delivery Report</field>
+            <field name="code">daily.delivery.sequence</field>
+            <field name="prefix">DD/00</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!--tree view of the project model -->
+        <record id="daily_site_tree" model="ir.ui.view">
+            <field name="name">daily.site.tree</field>
+            <field name="model">daily.site</field>
+            <field name="arch" type="xml">
+                <tree string="Daily Site">
+                    <field name="name_seq_daily_site"/>
+                    <field name="project_id"/>
+                    <field name="date"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!--form view of the project model -->
+        <record id="daily_site_form" model="ir.ui.view">
+            <field name="name">daily.site.form</field>
+            <field name="model">daily.site</field>
+            <field name="arch" type="xml">
+                <form string="daily site">
+                    <sheet>
+                        <group>
+                            <field name="name_seq_daily_site"/>
+                            <field name="project_id"/>
+                            <field name="user_id"/>
+                            <field name="date"/>
+                            <field name="Site"/>
+                        </group>
+                        <notebook>
+                            <page string="Daily site">
+                                <field name="daily_site_lines">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="Manpower_id"/>
+                                        <field name="Manpower_name"/>
+                                        <field name="Trade"/>
+                                        <field name="Quantity"/>
+                                        <field name="Nb_Hours"/>
+                                        <field name="Rate"/>
+                                        <field name="Amount"/>
+                                        <field name="Remarks"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Material Request">
+                                <field name="daily_material_request_lines">
+                                      <tree>
+                                        <field name="Material_name"/>
+                                        <field name="Unit"/>
+                                        <field name="Quantity"/>
+                                        <field name="Hours"/>
+                                        <field name="Rate"/>
+                                        <field name="Amount"/>
+                                        <field name="Remarks"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Panel Request">
+                                <field name="daily_panel_request_lines">
+                                      <tree>
+                                        <field name="Panel_name"/>
+                                        <field name="Unit"/>
+                                        <field name="Quantity"/>
+                                        <field name="Hours"/>
+                                        <field name="Rate"/>
+                                        <field name="Amount"/>
+                                        <field name="Remarks"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <!--action of the projects menu-->
+        <record id="action_daily_site" model="ir.actions.act_window">
+            <field name="name">Daily Site</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">daily.site</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new daily site report !
+              </p>
+            </field>
+        </record>
+
+</odoo>

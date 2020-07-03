@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!--tree view of the project model -->
+        <record id="daily_production_tree" model="ir.ui.view">
+            <field name="name">daily.production.tree</field>
+            <field name="model">daily.production</field>
+            <field name="arch" type="xml">
+                <tree string="Daily Production">
+                    <field name="name_seq_daily_production"/>
+                    <field name="project_id"/>
+                    <field name="date"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!--form view of the project model -->
+        <record id="daily_production_form" model="ir.ui.view">
+            <field name="name">daily.production.form</field>
+            <field name="model">daily.production</field>
+            <field name="arch" type="xml">
+                <form string="daily production">
+                    <sheet>
+                        <group>
+                            <field name="name_seq_daily_production"/>
+                            <field name="project_id"/>
+                            <field name="user_id"/>
+                            <field name="date"/>
+                            <field name="Site"/>
+                        </group>
+                        <notebook>
+                            <page string="Daily Production">
+                                <field name="daily_production_lines">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="Shift" readonly="1"/>
+                                        <field name="Weight"/>
+                                        <field name="Pro_QTY"/>
+                                        <field name="Area"/>
+                                        <field name="Worked_Hours"/>
+                                        <field name="Rate"/>
+                                        <field name="Amount"/>
+                                        <field name="Status"/>
+                                        <field name="Remarks"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="notes">
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <!--action of the projects menu-->
+        <record id="action_daily_production" model="ir.actions.act_window">
+            <field name="name">Daily Production</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">daily.production</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new daily production report !
+              </p>
+            </field>
+        </record>
+
+</odoo>

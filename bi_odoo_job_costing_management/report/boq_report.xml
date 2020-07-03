@@ -252,7 +252,7 @@
 					<div class="page">
 						<t t-foreach="docs" t-as="o">
 						<h2><center>JOB ORDER - QUOTATION</center></h2>
-						<h3><center><span t-usertime="%Y-%m-%d %H-%M-%S" /></center></h3>
+						<h3><center><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/></center></h3>
 						<table style="border-collapse: collapse;width: 100%;" class="table table-condensed">
 							<tr style="padding: 8px;text-align: left;border-top: 1px solid #ddd;height:50%;">
 								<td style="border: 1px solid black;">
@@ -287,7 +287,7 @@
 									<strong>CONTRACTOR : </strong>
 								</td>
 								<td style="border: 1px solid black;">
-									<span t-field="o.project_id.partner_id" />
+									<span t-field="o.partner_id" />
 								</td>
 								<td style="border: 1px solid black;">
 									<strong>Contact No : </strong>
@@ -302,6 +302,22 @@
 								</td>
 								<td style="border: 1px solid black;">
 									<span t-field="o.partner_id.child_ids.name" />
+								</td>
+								<td style="border: 1px solid black;">
+									<strong>SITE ADDRESS : </strong>
+								</td>
+								<td style="border: 1px solid black;">
+									<span t-field="o.Site_address" />
+								</td>
+							</tr>
+						</table>
+						<table style="border-collapse: collapse;width: 100%;" class="table table-condensed">
+							<tr style="padding: 8px;text-align: left;border-top: 1px solid #ddd;height:50%;">
+								<td style="border: 1px solid black;width: 40px;">
+									<strong>Description</strong>
+								</td>
+								<td style="border: 1px solid black;">
+									<span t-field="o.Description" />
 								</td>
 							</tr>
 						</table>
