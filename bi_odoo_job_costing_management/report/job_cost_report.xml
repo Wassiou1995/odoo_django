@@ -25,13 +25,13 @@
         <field name="dpi">80</field>
     </record>
 
-	<report id="job_order_report_id"
+	<!--report id="job_order_report_id"
 				string="Job Order"
 				model="job.order"
 				report_type="qweb-pdf"
 				file="bi_odoo_job_costing_management.job_order_temp_id"
 				name="bi_odoo_job_costing_management.job_order_temp_id"
-				paperformat="bi_odoo_job_costing_management.paperformat_progress_job"/>	
+				paperformat="bi_odoo_job_costing_management.paperformat_progress_job"/-->
 							
 	<report id="job_cost_sheet_report_id"
 				string="Job Cost Sheets"
@@ -61,14 +61,14 @@
     </record>
 
     <!--Bill of quantity report-->
-    <report id="report_boq"
+    <!--report id="report_boq"
             model="construction.drawing"
             string="BOQ Report"
             report_type="qweb-html"
             name="drawing.report_bill"
             file="drawing.report_bill"
             paperformat="drawing.paperformat_progress_job"
-            menu="True"/>
+            menu="True"/-->
 
     <!--Quotation report -->
     <report id="report_quotation"

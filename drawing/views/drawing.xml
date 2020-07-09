@@ -16,6 +16,41 @@
             </field>
         </record>
 
+        <record id="item_number_kanban" model="ir.ui.view">
+            <field name="name">item.number.kanban</field>
+            <field name="model">item.number</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="title"/>
+                    <field name="Quantity"/>
+                    <!--field name="Volume"/-->
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_hospital_patient_kanban">
+                                <!--t t-if="record.image.raw_value">
+                                    <div class="o_kanban_image_fill_left d-none d-md-block"
+                                         t-attf-style="background-image:url('#{kanban_image('item.number', 'image', record.id.raw_value)}')"/>
+                                </t>
+                                <t t-else="">
+                                    <img class="o_kanban_image" alt="Avatar" t-att-src='_s + "/base/static/img/avatar.png"'/>
+                                </t-->
+                                <div class="oe_kanban_details">
+                                    <strong class="o_kanban_record_title"><field name="title"/></strong>
+                                    <div class="o_kanban_tags_section"/>
+                                    <ul>
+                                        <li>Item : <field name="title"/></li>
+                                        <li>Qty : <field name="Quantity"/></li>
+                                        <!--li>Volume : <field name="Volume"/></li-->
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
         <!--form view of the project model -->
         <record id="drawing_form" model="ir.ui.view">
             <field name="name">construction.drawing.form</field>
@@ -69,22 +104,21 @@
                                         <field name="Thick"/>
                                         <field name="Volume" readonly="1" sum="Total"/>
                                         <field name="Quantity"/>
-                                        <field name="Unit"/>
-                                        <field name="UR_production" widget="monetary"/>
+                                        <field name="UR_production" widget="monetary" invisible="1"/>
                                         <field name="Unit_Production" widget="monetary"/>
                                         <field name="Amount_prod" widget="monetary"
-                                               sum="tot_pro" readonly="1" invisible="1"/>
-                                        <field name="UR_delivery" widget="monetary"/>
+                                               sum="tot_pro"/>
+                                        <field name="UR_delivery" widget="monetary" invisible="1"/>
                                         <field name="Unit_Delivery" widget="monetary"/>
                                         <field name="Amount_deli" widget="monetary"
-                                               sum="tot_del" readonly="1" invisible="1"/>
-                                        <field name="UR_erection" widget="monetary"/>
+                                               sum="tot_del"/>
+                                        <field name="UR_erection" widget="monetary" invisible="1"/>
                                         <field name="Unit_Erection" widget="monetary"/>
                                         <field name="Amount_erec" widget="monetary"
-                                               sum="tot_ere" readonly="1" invisible="1"/>
+                                               sum="tot_ere" />
                                         <field name="UR_total" widget="monetary" invisible="1"/>
                                         <field name="Amount_total" widget="monetary"
-                                               sum="amount_total" readonly="1" invisible="1"/>
+                                               sum="amount_total" />
                                         <field name="currency_id" invisible="1" />
                                         <button name="open_bom" string="Add Item Codes" type="object"/>
                                     </tree>
@@ -122,7 +156,7 @@
             </field>
         </record>
 
-     <!--tree view of the item code -->
+        <!--tree view of the item code -->
         <record id="code_tree" model="ir.ui.view">
             <field name="name">item.code.tree</field>
             <field name="model">item.code</field>
@@ -139,6 +173,54 @@
                     <field name="Quantity"/>
                     <field name="Unit"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id="number_tree" model="ir.ui.view">
+            <field name="name">item.number.tree</field>
+            <field name="model">item.number</field>
+            <field name="arch" type="xml">
+                <tree string="Items">
+                    <field name="title"/>
+                    <field name="Type"/>
+                    <field name="Type_of_finish"/>
+                    <field name="Width"/>
+                    <field name="Length"/>
+                    <field name="Height"/>
+                    <field name="Thick"/>
+                    <field name="Quantity"/>
+                    <field name="Unit"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--form view of the item code -->
+        <record id="number_form" model="ir.ui.view">
+            <field name="name">item.number.form</field>
+            <field name="model">item.code</field>
+            <field name="arch" type="xml">
+                <form string="BOM">
+                    <sheet>
+                        <group>
+                            <field name="item_id" readonly="1"/>
+                            <field name="title"/>
+                            <field name="Type"/>
+                            <field name="Type_of_finish"/>
+                            <field name="Width"/>
+                            <field name="Length"/>
+                            <field name="Height"/>
+                            <field name="Thick"/>
+                            <field name="Quantity"/>
+                            <field name="Unit"/>
+                            <!--field name="Volume"/-->
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
             </field>
         </record>
 
@@ -200,6 +282,20 @@
             </field>
         </record>
 
+     <!--action of the item code menu-->
+        <record id="action_item_number" model="ir.actions.act_window">
+            <field name="name">Item Number</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">item.number</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new item number !
+              </p>
+            </field>
+        </record>
+
         <!--action of the drawing menu-->
         <record id="action_drawing" model="ir.actions.act_window">
             <field name="name">Drawings</field>
@@ -217,6 +313,7 @@
 
         <!-- drawing menu-->
         <menuitem id="construction_drawing" name="Drawing Service"  action="action_drawing" sequence="1"/>
+        <menuitem id="item_number" name="Items"  action="action_item_number" parent="construction_drawing" sequence="1"/>
 
 
 </odoo>

@@ -44,10 +44,14 @@ class ConstructionDrawing (models.Model):
     type_name = fields.Char('Type Name', compute='_compute_type_name')
     total_volume = fields.Char('Total Volume', compute='_compute_total_volume')
 
-    '''@api.onchange('pricing_id')
+
+
+    '''
+    @api.onchange('pricing_id')
     def onchange_partner_id(self):
         for rec in self:
-            return {'domain': {'pricing_id': [('project_id', '=', rec.pricing_id.project_id)]}}'''
+            return {'domain': {'pricing_id': [('project_id', '=', rec.pricing_id.project_id)]}}
+    '''
 
     @api.multi
     def send_mail_template(self):
@@ -264,6 +268,25 @@ class ConstructionDrawing (models.Model):
                 'total_erec': total_erec,
             })
 
+    '''
+    @api.onchange('pricing_id')
+    @api.depends('pricing_id')
+    def onchange_product_id(self):
+        for rec in self:
+            # lines = ([5, 0, 0])
+            lines = []
+            for line in self.item_ids:
+                vals = {
+                    'pricing_id': self.pricing_id,
+                    'UR_production': self.pricing_id.UR_production,
+                    'UR_delivery': self.pricing_id.UR_delivery,
+                    'UR_erection': self.pricing_id.UR_erection,
+                }
+                lines.append(vals)
+            rec.item_ids = lines
+    '''
+
+
 #the items & sub items
 class ItemNumber (models.Model):
     _name = 'item.number'
@@ -304,6 +327,22 @@ class ItemNumber (models.Model):
     Unit_Erection = fields.Float(String='Unit Erection', compute='_compute_unit_erection', required=True)
     active = fields.Boolean(default=True,
                             help="If the active field is set to False, it will allow you to hide the estimation without removing it.")
+
+
+
+
+    '''
+    # get the unit rate price from pricing or this project
+    @api.multi
+    @api.onchange('pricing_id')
+    def onchange_pricing_id(self):
+        res = {}
+        if not self.pricing_id:
+            return res
+        self.UR_production = self.pricing_id.UR_production
+        self.UR_delivery = self.pricing_id.UR_delivery
+        self.UR_erection = self.pricing_id.UR_erection
+    '''
 
     # get the unit rate price from pricing or this project
     @api.multi
@@ -402,14 +441,14 @@ class ItemNumber (models.Model):
 
 
 
-    '''@api.multi
+    @api.multi
     @api.onchange('pricing_id')
     def onchange_pricing_id(self):
         res = {}
         if not self.pricing_id:
             return res
         self.pricing_id = self.drawing_id.pricing_id
-    '''
+
     # ITEM CODE
     class ItemCode(models.Model):
         _name = 'item.code'

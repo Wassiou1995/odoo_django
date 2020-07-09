@@ -19,21 +19,21 @@
     </record>
 
     <!--Bill of quantity report-->
-    <report id="report_boq"
+    <!--report id="report_boq"
             model="construction.drawing"
             string="BOQ Report"
             report_type="qweb-html"
             name="drawing.report_bill"
             file="drawing.report_bill"
             paperformat="drawing.paperformat_progress_job"
-            menu="True"/>
+            menu="True"/-->
 
     <!--Quotation report -->
-    <report id="report_quotation"
+    <!--report id="report_quotation"
             model="construction.drawing"
             string="Quotation Report"
             report_type="qweb-html"
             name="drawing.report_bill_quotation"
             file="drawing.report_bill_quotation"
-            menu="True" />
+            menu="True" /-->
 </odoo>
