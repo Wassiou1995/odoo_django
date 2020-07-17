@@ -35,6 +35,8 @@
                     <field name="purchase_order_count" widget="statinfo" string="Purchase" />
                 </button>
            </div>
+
+
            <field name="user_id" position="after">
                <field name="total_cost"/>
                <field name="total_estimated_cost"/>

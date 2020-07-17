@@ -1,4 +1,4 @@
-from odoo import fields, models, api, _
+from odoo import fields, models, api, _, SUPERUSER_ID
 from datetime import datetime
 
 
@@ -293,6 +293,14 @@ class ItemNumber (models.Model):
     _description = 'Items Records for Projects Lines'
     _rec_name = 'title'
 
+    @api.model
+    def _get_default_stage_id(self):
+        """ Gives default stage_id """
+        project_id = self.env.context.get('default_project_id')
+        if not project_id:
+            return False
+        return self.stage_find(project_id, [('fold', '=', False)])
+
     title = fields.Char('Item No', required=True)
     drawing_id = fields.Many2one('construction.drawing', 'Drawing')
     Type = fields.Char('Type')
@@ -328,7 +336,46 @@ class ItemNumber (models.Model):
     active = fields.Boolean(default=True,
                             help="If the active field is set to False, it will allow you to hide the estimation without removing it.")
 
+    state = fields.Selection([
+        ('new', 'New'),
+        ('Produced', 'Produced'),
+        ('Delivered', 'Delivered'),
+        ('Installed', 'Installed'),
+        ('Finished', 'Finished')], string='Stage', copy=False, default="new")
 
+    stage_id = fields.Many2one('project.item.type', string='Stage', ondelete='restrict', track_visibility='onchange',
+                               index=True,
+                               default=_get_default_stage_id, group_expand='_read_group_stage_ids',
+                               domain="[('project_ids', '=', project_id)]", copy=False)
+    kanban_state = fields.Selection([
+        ('normal', 'Grey'),
+        ('done', 'Green'),
+        ('blocked', 'Red')], string='Kanban State',
+        copy=False, default='normal', required=True)
+    kanban_state_label = fields.Char(compute='_compute_kanban_state_label', string='Kanban State Label',
+                                     track_visibility='onchange')
+    legend_normal = fields.Char(related='stage_id.legend_normal', string='Kanban Ongoing Explanation', readonly=True, related_sudo=False)
+
+
+
+    @api.depends('stage_id', 'kanban_state')
+    def _compute_kanban_state_label(self):
+        for task in self:
+            if task.kanban_state == 'normal':
+                task.kanban_state_label = task.legend_normal
+            elif task.kanban_state == 'blocked':
+                task.kanban_state_label = task.legend_blocked
+            else:
+                task.kanban_state_label = task.legend_done
+
+    @api.model
+    def _read_group_stage_ids(self, stages, domain, order):
+        search_domain = [('id', 'in', stages.ids)]
+        if 'default_project_id' in self.env.context:
+            search_domain = ['|', ('project_ids', '=', self.env.context['default_project_id'])] + search_domain
+
+        stage_ids = stages._search(search_domain, order=order, access_rights_uid=SUPERUSER_ID)
+        return stages.browse(stage_ids)
 
 
     '''
@@ -506,3 +553,64 @@ class ItemNumber (models.Model):
 
         # Send out the e-mail template to the user
         self.env['mail.template'].browse(template.id).send_mail(self.id)
+
+
+class ProjectItemType(models.Model):
+    _name = 'project.item.type'
+    _description = 'item Stage'
+    _order = 'sequence, id'
+
+    def _get_default_project_ids(self):
+        default_project_id = self.env.context.get('default_project_id')
+        return [default_project_id] if default_project_id else None
+
+    name = fields.Char(string='Stage Name', required=True, translate=True)
+    description = fields.Text(translate=True)
+    sequence = fields.Integer(default=1)
+    project_ids = fields.Many2many('project.project', 'project_task_type_rel', 'type_id', 'project_id',
+                                       string='Projects',
+                                       default=_get_default_project_ids)
+    legend_priority = fields.Char(
+            string='Starred Explanation', translate=True,
+            help='Explanation text to help users using the star on tasks or issues in this stage.')
+    legend_blocked = fields.Char(
+            'Red Kanban Label', default=lambda s: _('Blocked'), translate=True, required=True,
+            help='Override the default value displayed for the blocked state for kanban selection, when the task or issue is in that stage.')
+    legend_done = fields.Char(
+            'Green Kanban Label', default=lambda s: _('Ready for Next Stage'), translate=True, required=True,
+            help='Override the default value displayed for the done state for kanban selection, when the task or issue is in that stage.')
+    legend_normal = fields.Char(
+            'Grey Kanban Label', default=lambda s: _('In Progress'), translate=True, required=True,
+            help='Override the default value displayed for the normal state for kanban selection, when the task or issue is in that stage.')
+    mail_template_id = fields.Many2one(
+            'mail.template',
+            string='Email Template',
+            domain=[('model', '=', 'project.task')],
+            help="If set an email will be sent to the customer when the task or issue reaches this step.")
+    fold = fields.Boolean(string='Folded in Kanban',
+                              help='This stage is folded in the kanban view when there are no records in that stage to display.')
+    rating_template_id = fields.Many2one(
+            'mail.template',
+            string='Rating Email Template',
+            domain=[('model', '=', 'project.task')],
+            help="If set and if the project's rating configuration is 'Rating when changing stage', then an email will be sent to the customer when the task reaches this step.")
+    auto_validation_kanban_state = fields.Boolean('Automatic kanban status', default=False,
+                                                      help="Automatically modify the kanban state when the customer replies to the feedback for this stage.\n"
+                                                           " * A good feedback from the customer will update the kanban state to 'ready for the new stage' (green bullet).\n"
+                                                           " * A medium or a bad feedback will set the kanban state to 'blocked' (red bullet).\n")
+
+
+
+    @api.multi
+    def unlink(self):
+        stages = self
+        default_project_id = self.env.context.get('default_project_id')
+        if default_project_id:
+            shared_stages = self.filtered(
+                lambda x: len(x.project_ids) > 1 and default_project_id in x.project_ids.ids)
+            tasks = self.env['project.task'].with_context(active_test=False).search(
+                [('project_id', '=', default_project_id), ('stage_id', 'in', self.ids)])
+            if shared_stages and not tasks:
+                shared_stages.write({'project_ids': [(3, default_project_id)]})
+                stages = self.filtered(lambda x: x not in shared_stages)
+            return super(ProjectItemType, stages).unlink()
