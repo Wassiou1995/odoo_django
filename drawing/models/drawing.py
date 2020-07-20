@@ -335,14 +335,6 @@ class ItemNumber (models.Model):
     Unit_Erection = fields.Float(String='Unit Erection', compute='_compute_unit_erection', required=True)
     active = fields.Boolean(default=True,
                             help="If the active field is set to False, it will allow you to hide the estimation without removing it.")
-
-    state = fields.Selection([
-        ('new', 'New'),
-        ('Produced', 'Produced'),
-        ('Delivered', 'Delivered'),
-        ('Installed', 'Installed'),
-        ('Finished', 'Finished')], string='Stage', copy=False, default="new")
-
     stage_id = fields.Many2one('project.item.type', string='Stage', ondelete='restrict', track_visibility='onchange',
                                index=True,
                                default=_get_default_stage_id, group_expand='_read_group_stage_ids',
@@ -418,7 +410,6 @@ class ItemNumber (models.Model):
 
         }
 
-
     #Compute Volume of an item
     @api.multi
     @api.depends('Length', 'Width', 'Height')
@@ -459,7 +450,6 @@ class ItemNumber (models.Model):
             rec.Amount_erec = rec.Quantity * rec.Unit_Erection
 
     # Compute Unit rates of amount
-
     @api.multi
     @api.depends('Unit_Production','UR_production', 'Volume')
     def _compute_unit_production(self):

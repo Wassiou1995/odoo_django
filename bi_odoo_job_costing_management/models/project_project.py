@@ -98,6 +98,23 @@ class Project(models.Model):
             'context': "{'default_project_id': %d}" % (self.id)
         }
 
+        # open the pricing sheet
+
+    @api.multi
+    def open_daily_reports(self):
+        self.ensure_one()
+        return {
+            'name': _('Daily Reports'),
+            'domain': [('project_id', '=', self.id)],
+            'res_model': 'item.number',
+            'type': 'ir.actions.act_window',
+            'view_id': False,
+            'view_mode': 'kanban',
+            'view_type': 'form',
+            'limit': 80,
+            'context': "{'default_project_id': %d}" % (self.id)
+        }
+
     # open the drawing
     @api.multi
     def open_drawing(self):
@@ -132,6 +149,10 @@ class Project(models.Model):
 
     def get_drawing_count(self):
         count = self.env['construction.drawing'].search_count([('project_id', '=', self.id)])
+        self.Drawing_count = count
+
+    def get_items(self):
+        count = self.env['item.number'].search_count([('project_id', '=', self.id)])
         self.Drawing_count = count
 
 

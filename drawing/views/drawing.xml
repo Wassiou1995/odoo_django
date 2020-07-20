@@ -20,7 +20,7 @@
             <field name="name">item.number.kanban</field>
             <field name="model">item.number</field>
             <field name="arch" type="xml">
-                <kanban default_group_by="stage_id">
+                <kanban default_group_by="stage_id" quick_create="false">
                     <field name="title"/>
                     <field name="Quantity"/>
                     <!--field name="Volume"/-->
@@ -282,7 +282,7 @@
             </field>
         </record>
 
-     <!--action of the item code menu-->
+        <!--action of the item code menu-->
         <record id="action_item_number" model="ir.actions.act_window">
             <field name="name">Item Number</field>
             <field name="type">ir.actions.act_window</field>
@@ -394,6 +394,19 @@
                 </tree>
             </field>
         </record>
+
+        <!--record id="project_issue_view_kanban_inherit_no_group_create" model="ir.ui.view">
+            <field name="name">project.issue.view.kanban.inherit.no.group.create</field>
+            <field name="model">project.issue</field>
+            <field name="inherit_id" ref="project_issue.project_issue_kanban_view"/>
+            <field name="mode">primary</field>
+            <field name="priority">32</field>
+            <field name="arch" type="xml">
+                <kanban position="attributes">
+                    <attribute name="group_create">false</attribute>
+                </kanban>
+            </field>
+        </record-->
 
         <!-- drawing menu-->
         <menuitem id="construction_drawing" name="Drawing Service"  action="action_drawing" sequence="1"/>
