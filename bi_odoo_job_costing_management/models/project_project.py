@@ -9,6 +9,7 @@ class Project(models.Model):
     name_seq_project = fields.Char(string='Reference', required=True, copy=False, readonly=True,
                                    index=True, default='New')
     pricing_count = fields.Integer(compute='get_pricing_count', string="Number of Pricings")
+    item_count = fields.Integer(compute='get_item_count', string="Number of items")
     issue_count = fields.Integer(compute='_compute_issue_count', string="Issues")
     issue_ids = fields.One2many('project.issue', 'project_id', string="Issues", domain=['|', ('stage_id.fold', '=', False), ('stage_id', '=', False)])
     issue_needaction_count = fields.Integer(compute="_issue_needaction_count", string="Issues")
@@ -146,6 +147,11 @@ class Project(models.Model):
     def get_estimation_count(self):
         count = self.env['construction.estimation'].search_count([('project_id', '=', self.id)])
         self.Estimation_count = count
+
+    def get_item_count(self):
+        count = self.env['item.number'].search_count([('project_id', '=', self.id)])
+        self.Estimation_count = count
+
 
     def get_drawing_count(self):
         count = self.env['construction.drawing'].search_count([('project_id', '=', self.id)])

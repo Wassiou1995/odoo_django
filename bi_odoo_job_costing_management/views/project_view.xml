@@ -63,8 +63,8 @@
                      <button class="oe_stat_button" name="open_pricing" type="object" icon="fa-bitcoin">
                             <field string="Pricing" name="pricing_count" widget="statinfo"/>
                      </button>
-                     <button class="oe_stat_button" name="open_daily_reports" type="object" icon="fa-bitcoin">
-                            <field string="Daily Reports" name="pricing_count" widget="statinfo"/>
+                     <button class="oe_stat_button" name="open_daily_reports" type="object" icon="fa-copy">
+                            <field string="Daily Reports" name="item_count" widget="statinfo"/>
                      </button>
 	            </div>
         	</field>
