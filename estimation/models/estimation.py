@@ -70,7 +70,7 @@ class ConstructionEstimation (models.Model):
     rejected_date = fields.Date(string="Rejected Date", readonly=True, copy=False)
     reason_for_requisition = fields.Text(string="Reason For Requisition")
 
-
+    #DERNIER UPDATE MODULE LE 23 /07/ 2020
     # Create one pricing for the projects
     @api.multi
     def open_pricing(self):
