@@ -20,10 +20,9 @@
             <field name="name">item.number.kanban</field>
             <field name="model">item.number</field>
             <field name="arch" type="xml">
-                <kanban default_group_by="stage_id" quick_create="false">
+                <kanban default_group_by="stage_id">
                     <field name="title"/>
                     <field name="Quantity"/>
-                    <!--field name="Volume"/-->
                     <templates>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_hospital_patient_kanban">
@@ -40,7 +39,6 @@
                                     <ul>
                                         <li>Item : <field name="title"/></li>
                                         <li>Qty : <field name="Quantity"/></li>
-                                        <!--li>Volume : <field name="Volume"/></li-->
                                     </ul>
                                 </div>
                             </div>
@@ -412,6 +410,5 @@
         <menuitem id="construction_drawing" name="Drawing Service"  action="action_drawing" sequence="1"/>
         <menuitem id="item_number" name="Items"  action="action_item_number" parent="construction_drawing" sequence="1"/>
         <menuitem action="open_item_type_form" id="menu_project_item_project" name="Stages" parent="construction_drawing" sequence="3" groups="base.group_no_one"/>
-
 
 </odoo>

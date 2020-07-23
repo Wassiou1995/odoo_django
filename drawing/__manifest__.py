@@ -30,6 +30,7 @@
         'views/drawing.xml',
         'report/report.xml',
         'report/boq_report.xml',
+        'data/stage_data.xml',
 
     ],
     # only loaded in demonstration mode

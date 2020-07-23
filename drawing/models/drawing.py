@@ -347,6 +347,11 @@ class ItemNumber (models.Model):
     kanban_state_label = fields.Char(compute='_compute_kanban_state_label', string='Kanban State Label',
                                      track_visibility='onchange')
     legend_normal = fields.Char(related='stage_id.legend_normal', string='Kanban Ongoing Explanation', readonly=True, related_sudo=False)
+    legend_blocked = fields.Char(related='stage_id.legend_blocked', string='Kanban Blocked Explanation', readonly=True,
+                                 related_sudo=False)
+    legend_done = fields.Char(related='stage_id.legend_done', string='Kanban Valid Explanation', readonly=True,
+                              related_sudo=False)
+    color = fields.Integer(string='Color Index')
 
 
 
@@ -475,16 +480,6 @@ class ItemNumber (models.Model):
         for line in self:
             line.currency_id = res_user_id.company_id.currency_id.id
 
-
-
-
-    @api.multi
-    @api.onchange('pricing_id')
-    def onchange_pricing_id(self):
-        res = {}
-        if not self.pricing_id:
-            return res
-        self.pricing_id = self.drawing_id.pricing_id
 
     # ITEM CODE
     class ItemCode(models.Model):
